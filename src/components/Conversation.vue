@@ -1,0 +1,219 @@
+<template>
+	<div class="row p-2" v-if="contact">
+		<div class="col-10 d-flex">
+			<img
+				class="img-fluid rounded-circle"
+				style="height: 70px"
+				:src="
+					require('@/assets/images/' +
+						((contact && contact.image) || 'unknown.png'))
+				"
+			/>
+			<div class="pl-2 d-flex flex-column">
+				<h2 class="align-middle">
+					Conversation avec
+					{{ (contact && contact.nickname) || 'personne' }}
+				</h2>
+				<div class="d-flex">
+					<div
+						v-if="contact.status_object"
+						class="statusTab mr-1"
+						:style="{
+							'background-color': contact.status_object.color,
+						}"
+					></div>
+					<h6>
+						{{ contact.motd || contact.status_object.name }}
+					</h6>
+				</div>
+			</div>
+		</div>
+		<div class="col-2 d-flex justify-content-center">
+			<button class="btn btn-primary" @click="archiveCurrentConversation">
+				Archiver
+			</button>
+		</div>
+	</div>
+	<div class="messagebox" ref="messageBox">
+		<template v-for="message in renderMessage()" v-bind:key="message.id">
+			<Message :message="message" :view="message.view" />
+		</template>
+	</div>
+	<div
+		v-show="conversation.type == 'conversation'"
+		class="text-center"
+		ref="hb"
+	>
+		<textarea
+			maxlength="256"
+			ref="keyboardRef"
+			placeholder="Ecrivez un message"
+			v-model="message"
+		>
+		</textarea>
+	</div>
+	<div id="typing"></div>
+</template>
+
+<script>
+import jQuery from 'jquery'
+import 'jquery-ui-bundle'
+import 'jquery-ui-bundle/jquery-ui.css'
+
+import 'virtual-keyboard/dist/js/jquery.keyboard.js'
+import 'virtual-keyboard/dist/css/keyboard.min.css'
+
+import Message from '../components/Message.vue'
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+	// relating to the attribute define in outer <router-view> tag.
+	components: { Message },
+	data: function () {
+		return {
+			message: '',
+		}
+	},
+	computed: {
+		...mapGetters({
+			contact: 'conversations/getContact',
+			messages: 'conversations/getMessages',
+			conversation: 'conversations/getConversation',
+
+			currentView: 'user/getView',
+		}),
+	},
+	watch: {
+		message() {
+			this.message = this.message.slice(0, 255)
+		},
+		messages: {
+			deep: true,
+
+			handler() {
+				setTimeout(() => {
+					if (this.$refs.messageBox)
+						this.$refs.messageBox.scrollTop =
+							this.$refs.messageBox.scrollHeight
+				}, 0)
+			},
+		},
+	},
+	methods: {
+		...mapActions('conversations', [
+			'sendMessage',
+			'archiveCurrentConversation',
+		]),
+		renderMessage() {
+			let prevMessage = null
+
+			for (const message of this.messages) {
+				if (prevMessage?.sender == message.sender) {
+					message.view = 'light'
+				} else {
+					message.view = 'full'
+				}
+				prevMessage = message
+			}
+			return this.messages
+		},
+	},
+	mounted: function () {
+		let options = {
+			layout: 'french-azerty-1',
+			usePreview: false,
+			language: 'fr',
+			maxLength: 255,
+			css: {
+				// input & preview
+				// "label-default" for a darker background
+				// "light" for white text
+				input: 'text-white form-control input-sm chat',
+				// keyboard container
+				container: 'center-block well bg-dark',
+				// default state
+				buttonDefault: 'btn bg-muted',
+				// hovered button
+				buttonHover: 'btn-primary',
+				// Action keys (e.g. Accept, Cancel, Tab, etc);
+				// this replaces "actionClass" option
+				buttonAction: 'active',
+				// used when disabling the decimal button {dec}
+				// when a decimal exists in the input area
+				buttonDisabled: 'disabled',
+			},
+		}
+		;(jQuery.keyboard.layouts['french-azerty-1'] = {
+			name: 'french-azerty-1',
+			lang: ['fr'],
+			normal: [
+				'² & é " \' ( - è _ ç à ) = {bksp}',
+				'{tab} a z e r t y u i o p ^ $',
+				'q s d f g h j k l m  ù * {enter}',
+				'{shift} < w x c v b n , ; : ! {shift}',
+				'{cancel} {alt} {space} {alt} {accept}',
+			],
+			shift: [
+				'{sp:1} 1 2 3 4 5 6 7 8 9 0 ° + {bksp}',
+				'{tab} A Z E R T Y U I O P ¨ £',
+				'Q S D F G H J K L M % µ {enter}',
+				'{shift} > W X C V B N ? . / § {shift}',
+				'{cancel} {alt} {space} {alt} {accept}',
+			],
+			alt: [
+				'² & ~ # { [ | ` \\ ^ @ ] } {bksp}',
+				'{tab} a z € r t y u i o p ^ ¤',
+				'q s d f g h j k l m  ù * {enter}',
+				'{shift} < w x c v b n , ; : ! {shift}',
+				'{cancel} {alt} {space} {alt} {accept}',
+			],
+			'alt-shift': [
+				'{sp:1} 1 ~ # { [ | ` \\ ^ @ ] } {bksp}',
+				'{tab} A Z € R T Y U I O P ¨ ¤',
+				'Q S D F G H J K L M % µ {enter}',
+				'{shift} > W X C V B N ? . / § {shift}',
+				'{cancel} {alt} {space} {alt} {accept}',
+			],
+		}),
+			(jQuery.keyboard.language.fr = {
+				language: 'Français (French)',
+				display: {
+					a: '✔:Envoyer',
+					accept: 'Envoyer',
+					alt: 'AltGr:Caractère alternatif',
+					b: '←:Suppr arrière',
+					bksp: '←Suppr:Suppr arrière',
+					c: '✖:Annuler',
+					cancel: 'Annuler:Annuler (Échap)',
+					clear: 'C:Effacer',
+					combo: 'ö:Bacsuler les touches combo',
+					dec: '.:Decimal',
+					e: '↵:Entrée',
+					enter: 'Entrée:Entrée',
+					lock: '⇪ Verr Mag:Verouillage majuscule',
+					s: '⇧:Majuscule',
+					shift: 'Maj:Majuscule',
+					sign: '±:Change de signe',
+					space: '&nbsp;:Espace',
+					t: '⇥:Tabulation',
+					tab: '⇥ Tab:Tabulation',
+				},
+				wheelMessage:
+					'Utiliser la molette de la souris pour voir les autres lettres',
+			})
+
+		const keyboardSelector = jQuery(this.$refs.keyboardRef)
+		keyboardSelector.keyboard(options)
+
+		const self = this
+
+		keyboardSelector.bind('accepted', function () {
+			self.sendMessage(self.message)
+			self.message = ''
+		})
+		keyboardSelector.bind('keyboardChange', function () {
+			self.message = self.$refs.keyboardRef.value
+		})
+	},
+}
+</script>
