@@ -13,6 +13,12 @@ const sequelize = new Sequelize(
     port: confBD.port,
     schema: confBD.schema,
     dialect: 'postgres',
+    dialectOptions : {
+      ssl: {
+          require: true,
+          rejectUnauthorized: false
+      }
+    },
     logging: confBD.logging,
   }
 )
