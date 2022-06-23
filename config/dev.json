@@ -1,0 +1,15 @@
+{
+    "aeskey": "3AsA1e8PQgO9inS4F2v3ZScz8cH7kY2NNsRoN07ew",
+    "serveur": {
+      "port": 9000
+    },
+    "bd": {
+      "hote": "172.16.0.57",
+      "port": 5432,
+      "nomBase": "j.ouvrard",
+      "utilisateur": "j.ouvrard",
+      "passe": "P@ssword",
+      "schema": "messagerie",
+      "logging": false
+    }
+  }

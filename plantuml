@@ -1,0 +1,31 @@
+@startuml
+class theme {
+   id <id>
+   lib_theme
+}
+
+class categorie {
+   id <id>
+   lib_categorie
+   nom
+   extrait
+}
+
+class langue {
+   id <id>
+   lib_langage
+}
+
+class extrait {
+  id <id>
+  titre
+  code
+}
+
+
+theme "0..*" -- "1" extrait
+theme "1" -- "*" categorie
+langue "1" -- "1" extrait
+categorie "1" -- "0..*" extrait
+categorie "0..*" -- "0..*" categorie
+@enduml
