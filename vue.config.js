@@ -1,3 +1,3 @@
 module.exports = {
-	publicPath: '/~j.ouvrard/secumess/',
+	//publicPath: '/~j.ouvrard/secumess/',
 }
