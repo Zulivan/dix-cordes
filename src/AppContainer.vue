@@ -41,6 +41,10 @@ body {
 	color: #242424;
 }
 
+.btn {
+    white-space: normal;
+}
+
 .lds-ring {
 	display: inline-block;
 	position: relative;
