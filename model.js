@@ -4,23 +4,17 @@ import config from 'config'
 
 const confBD = config.get('bd')
 
-const sequelize = new Sequelize(
-  confBD.nomBase,
-  confBD.utilisateur,
-  confBD.passe,
-  {
-    host: confBD.hote,
-    port: confBD.port,
-    schema: confBD.schema,
-    dialect: 'postgres',
-    dialectOptions : {
-      ssl: {
-          require: true,
-          rejectUnauthorized: false
-      }
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  use_env_variable: 'DATABASE_URL',
+  schema: confBD.schema,
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
     },
-    logging: confBD.logging,
-  }
-)
+  },
+  logging: confBD.logging,
+})
 
 export default initModels(sequelize)
