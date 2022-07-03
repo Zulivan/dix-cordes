@@ -3,9 +3,6 @@ import jwt from 'jsonwebtoken'
 // get config vars
 dotenv.config()
 
-// access config var
-console.log(process.env.TOKEN_SECRET)
-
 /** Génère un token JWT pour l'utilisateur
  * @param {string} data Données à associer à la session
  * @return {string} Token JWT
