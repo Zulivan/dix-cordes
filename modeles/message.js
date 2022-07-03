@@ -1,6 +1,5 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable new-cap */
-import config from 'config'
 import aes256 from 'aes256'
 import _sequelize from 'sequelize'
 const { Model } = _sequelize
@@ -41,14 +40,14 @@ export default class Message extends Model {
           get: function () {
             if (!this.getDataValue('content')) return ''
             return aes256.decrypt(
-              config.get('aeskey'),
+              process.env.AES_KEY,
               this.getDataValue('content')
             )
           },
           set: function (value) {
             this.setDataValue(
               'content',
-              aes256.encrypt(config.get('aeskey'), value)
+              aes256.encrypt(process.env.AES_KEY, value)
             )
           },
         },

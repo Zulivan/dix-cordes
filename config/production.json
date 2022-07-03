@@ -1,15 +1,8 @@
 {
-    "aeskey": "3AsA1e8PQgO9inS4F2v3ZScz8cH7kY2NNsRoN07ew",
-    "serveur": {
-      "port": 9000
-    },
-    "bd": {
-      "hote": "ec2-34-248-169-69.eu-west-1.compute.amazonaws.com",
-      "port": 5432,
-      "nomBase": "d5frcf06gk771f",
-      "utilisateur": "tccwkeqeuzkssn",
-      "passe": "69bee2122d5ea9289c00bb5c506dc07f39e642ccdd746df0abfd04c426ae9c91",
-      "schema": "messagerie",
-      "logging": false
-    }
+  "serveur": {
+    "port": 9000
+  },
+  "bd": {
+    "schema": "messagerie"
   }
+}
