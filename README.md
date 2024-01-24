@@ -1,4 +1,4 @@
-- # Dixcordes App
+# Dixcordes App
 
 This repository contains a Docker Compose configuration to run the Dix-cordes app, which includes an Express.js server and a PostgreSQL database server.
 ## Prerequisites
@@ -9,13 +9,9 @@ Follow these steps to set up and run the Dixcordes app:
 1. Clone the repository to your local machine:
 
 ```bash
-git clone <repository-url>
-``` 
-2. Navigate to the project's root directory:
+git clone https://github.com/Zulivan/dix-cordes.git
+```
 
-```bash
-cd <repository-directory>
-``` 
 3. Create a `.env` file in the project's root directory with the following content. Update the values as needed:
 
 ```dotenv
