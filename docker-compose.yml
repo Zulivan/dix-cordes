@@ -6,7 +6,7 @@ services:
             - 9000:80
         environment:
             TOKEN_SECRET: AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
-            DATABASE_URL: postgres://dixcordes_user:dixcordes_password@postgres:5432/dixcordes_db
+            DATABASE_URL: postgres://dixcordes_user:dixcordes_password@postgres:5432/dixcordes_db?sslmode=disable
         networks:
             - dixcordes-network
     postgres:

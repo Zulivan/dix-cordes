@@ -23,6 +23,8 @@ id INT DEFAULT NEXTVAL ('user_seq'),
 nickname VARCHAR(40),
 fname VARCHAR(40),
 lname VARCHAR(40),
+image VARCHAR(255),
+motd VARCHAR(255),
 password VARCHAR(255),
 status VARCHAR(40),
 PRIMARY KEY (id)

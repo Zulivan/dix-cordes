@@ -8,9 +8,10 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   use_env_variable: 'DATABASE_URL',
   schema: confBD.schema,
   dialect: 'postgres',
+  ssl: process.env.DATABASE_URL.includes("sslmode=disable") ? false : true,
   dialectOptions: {
     ssl: {
-      require: true,
+      require: process.env.DATABASE_URL.includes("sslmode=disable") ? false : true,
       rejectUnauthorized: false,
     },
   },
