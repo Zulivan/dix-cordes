@@ -1,0 +1,30 @@
+version: "3"
+services:
+    dixcordes:
+        build: .
+        ports:
+            - 9000:80
+        environment:
+            TOKEN_SECRET: AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
+            DATABASE_URL: postgres://dixcordes_user:dixcordes_password@postgres:5432/dixcordes_db
+        networks:
+            - dixcordes-network
+    postgres:
+        image: postgres:latest
+        environment:
+            POSTGRES_USER: dixcordes_user 
+            POSTGRES_PASSWORD: dixcordes_password
+            POSTGRES_DB: dixcordes_db
+        ports:
+            - 5432:5432
+        volumes:
+        - postgres_db:/var/lib/postgresql/data
+        - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+        networks:
+            - dixcordes-network
+volumes:
+  postgres_db:
+    driver: local
+networks:
+  dixcordes-network:
+    driver: bridge
