@@ -9,8 +9,9 @@
 			<img
 				class="img-fluid rounded-circle"
 				:src="
-					require('@/assets/images/' +
-						(contact.image || 'unknown.png'))
+					require(
+						'@/assets/images/' + (contact.image || 'unknown.png')
+					)
 				"
 			/>
 			<div

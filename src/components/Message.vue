@@ -12,8 +12,10 @@
 			v-show="this.view == 'full'"
 			class="img-fluid rounded-circle message-img mx-3"
 			:src="
-				require('@/assets/images/' +
-					(message.sender_user.image || 'unknown.png'))
+				require(
+					'@/assets/images/' +
+						(message.sender_user.image || 'unknown.png')
+				)
 			"
 		/>
 		<code

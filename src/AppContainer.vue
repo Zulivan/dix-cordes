@@ -42,7 +42,7 @@ body {
 }
 
 .btn {
-    white-space: normal;
+	white-space: normal;
 }
 
 .lds-ring {

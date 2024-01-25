@@ -6,63 +6,91 @@
 					<h5 class="text-danger">{{ error }}</h5>
 					<form
 						v-show="view == 0"
-						@submit="btnRegister"
+						@submit.prevent="btnRegister"
 						class="d-flex flex-column justify-content-center"
 					>
 						<h1>S'inscrire</h1>
-						<label>Pseudonyme</label>
-						<input
-							type="text"
-							v-model="username"
-							name="usernameField"
-							id="rusernameField"
-							:disabled="processing"
-						/>
-						<label>Mot de passe</label>
-						<input
-							type="password"
-							v-model="pwd"
-							name="rpasswordField"
-							id="passwordField"
-							:disabled="processing"
-						/>
-						<input
+						<div class="mb-3">
+							<label for="rusernameField" class="form-label"
+								>Pseudonyme</label
+							>
+							<input
+								type="text"
+								v-model="username"
+								name="usernameField"
+								id="rusernameField"
+								class="form-control"
+								:disabled="processing"
+							/>
+						</div>
+
+						<div class="mb-3">
+							<label for="rpasswordField" class="form-label"
+								>Mot de passe</label
+							>
+							<input
+								type="password"
+								v-model="pwd"
+								name="rpasswordField"
+								id="rpasswordField"
+								class="form-control"
+								:disabled="processing"
+							/>
+						</div>
+
+						<button
 							type="submit"
 							name="submit"
-							value="S'inscrire"
+							class="btn btn-primary"
 							id="rsubmit"
 							:disabled="processing"
-						/>
+						>
+							S'inscrire
+						</button>
 					</form>
 					<form
 						v-show="view == 1"
-						@submit="btnLogin"
+						@submit.prevent="btnLogin"
 						class="d-flex flex-column justify-content-center"
 					>
 						<h1>Se connecter</h1>
-						<label>Pseudonyme</label>
-						<input
-							type="text"
-							v-model="username"
-							name="usernameField"
-							id="lusernameField"
-							:disabled="processing"
-						/>
-						<label>Mot de passe</label>
-						<input
-							type="password"
-							v-model="pwd"
-							name="passwordField"
-							id="lpasswordField"
-							:disabled="processing"
-						/>
-						<input
+
+						<div class="mb-3">
+							<label for="lusernameField" class="form-label"
+								>Pseudonyme</label
+							>
+							<input
+								type="text"
+								v-model="username"
+								name="usernameField"
+								id="lusernameField"
+								class="form-control"
+								:disabled="processing"
+							/>
+						</div>
+
+						<div class="mb-3">
+							<label for="lpasswordField" class="form-label"
+								>Mot de passe</label
+							>
+							<input
+								type="password"
+								v-model="pwd"
+								name="passwordField"
+								id="lpasswordField"
+								class="form-control"
+								:disabled="processing"
+							/>
+						</div>
+
+						<button
 							type="submit"
 							name="submit"
-							value="Se connecter"
-							id="submit"
+							class="btn btn-primary"
 							:disabled="processing"
-						/>
+						>
+							Se connecter
+						</button>
 					</form>
 					<label @click="switchView" class="mt-3 text-primary">{{
 						viewText()

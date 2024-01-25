@@ -1,52 +1,53 @@
 {
-  "name": "dix-cordes",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "start": "vue-cli-service serve"
-  },
-  "engines": {
-    "node": "14.19.x",
-    "npm": "6.14"
-  },
-  "dependencies": {
-    "@vueuse/sound": "^1.1.7",
-    "axios": "^0.26.0",
-    "core-js": "^3.6.5",
-    "jQuery": "^1.7.4",
-    "jquery": "^3.6.0",
-    "jquery-ui": "^1.13.0",
-    "jquery-ui-bundle": "^1.12.1-migrate",
-    "location": "0.0.1",
-    "navigator": "^1.0.1",
-    "socket.io-client": "^4.4.1",
-    "virtual-keyboard": "^1.30.3",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.0-0",
-    "vue-virtual-keyboard": "^1.3.0",
-    "vuex": "^4.0.0-0",
-    "vuex-persistedstate": "^4.1.0",
-    "xmlhttprequest": "^1.8.0"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-unit-mocha": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/test-utils": "^2.0.0-0",
-    "babel-eslint": "^10.1.0",
-    "chai": "^4.1.2",
-    "eslint": "^6.7.2",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^7.0.0",
-    "prettier": "^2.2.1"
-  }
+	"name": "dix-cordes",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"serve": "vue-cli-service lint --fix && vue-cli-service serve",
+		"build": "vue-cli-service lint --fix && vue-cli-service build",
+		"test:unit": "vue-cli-service test:unit",
+		"lint": "vue-cli-service lint",
+		"start": "vue-cli-service lint --fix && vue-cli-service serve"
+	},
+	"engines": {
+		"node": "18.x",
+		"npm": "7.x"
+	},
+	"dependencies": {
+		"@vueuse/sound": "^2.0.1",
+		"axios": "^1.6.7",
+		"core-js": "^3.35.1",
+		"jquery": "^3.7.1",
+		"jquery-ui": "^1.13.2",
+		"jquery-ui-bundle": "^1.12.1-migrate",
+		"location": "0.0.1",
+		"navigator": "^1.0.1",
+		"postcss": "^8.4.33",
+		"socket.io-client": "^4.7.4",
+		"virtual-keyboard": "^1.30.4",
+		"vue": "^3.2.22",
+		"vue-router": "^4.2.5",
+		"vue-virtual-keyboard": "^1.3.0",
+		"vuex": "^4.1.0",
+		"vuex-persistedstate": "^4.1.0",
+		"xmlhttprequest": "^1.8.0"
+	},
+	"devDependencies": {
+		"@babel/eslint-parser": "7.23.9",
+		"@vue/cli": "5.0.8",
+		"@vue/cli-plugin-babel": "~5.0.8",
+		"@vue/cli-plugin-eslint": "~5.0.8",
+		"@vue/cli-plugin-router": "~5.0.8",
+		"@vue/cli-plugin-unit-mocha": "~5.0.8",
+		"@vue/cli-plugin-vuex": "~5.0.8",
+		"@vue/cli-service": "~5.0.8",
+		"@vue/compiler-sfc": "^3.4.15",
+		"@vue/eslint-config-prettier": "^9.0.0",
+		"@vue/test-utils": "^2.4.3",
+		"chai": "^5.0.3",
+		"eslint": "^8.56.0",
+		"eslint-plugin-prettier": "^5.1.3",
+		"eslint-plugin-vue": "^9.20.1",
+		"prettier": "^3.2.4"
+	}
 }

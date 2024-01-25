@@ -5,8 +5,10 @@
 				class="img-fluid rounded-circle"
 				style="height: 70px"
 				:src="
-					require('@/assets/images/' +
-						((contact && contact.image) || 'unknown.png'))
+					require(
+						'@/assets/images/' +
+							((contact && contact.image) || 'unknown.png')
+					)
 				"
 			/>
 			<div class="pl-2 d-flex flex-column">
@@ -56,7 +58,7 @@
 </template>
 
 <script>
-import jQuery from 'jquery'
+import jquery from 'jquery'
 import 'jquery-ui-bundle'
 import 'jquery-ui-bundle/jquery-ui.css'
 
@@ -143,7 +145,7 @@ export default {
 				buttonDisabled: 'disabled',
 			},
 		}
-		;(jQuery.keyboard.layouts['french-azerty-1'] = {
+		;(jquery.keyboard.layouts['french-azerty-1'] = {
 			name: 'french-azerty-1',
 			lang: ['fr'],
 			normal: [
@@ -175,7 +177,7 @@ export default {
 				'{cancel} {alt} {space} {alt} {accept}',
 			],
 		}),
-			(jQuery.keyboard.language.fr = {
+			(jquery.keyboard.language.fr = {
 				language: 'Français (French)',
 				display: {
 					a: '✔:Envoyer',
@@ -202,7 +204,7 @@ export default {
 					'Utiliser la molette de la souris pour voir les autres lettres',
 			})
 
-		const keyboardSelector = jQuery(this.$refs.keyboardRef)
+		const keyboardSelector = jquery(this.$refs.keyboardRef)
 		keyboardSelector.keyboard(options)
 
 		const self = this

@@ -1,6 +1,7 @@
 {
   "trailingComma": "es5",
   "useTabs": true,
+  "prettier.configPath": ".prettierrc.js",
   "tabWidth": 4,
   "semi": false,
   "singleQuote": true
