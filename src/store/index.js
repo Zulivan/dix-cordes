@@ -15,4 +15,16 @@ export default createStore({
 			paths: ['user', 'conversations'],
 		}),
 	],
+	mutations: {
+		reset(state) {
+			state.user = user.state()
+			state.conversations = conversations.state()
+			state.contacts = contacts.state()
+		},
+	},
+	actions: {
+		reset({ commit }) {
+			commit('reset')
+		},
+	},
 })

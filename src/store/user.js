@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store/index.js'
 
 export default {
 	namespaced: true,
@@ -64,7 +65,7 @@ export default {
 		async login(state, data) {
 			const res = await axios.post('/auth/login', data)
 
-			localStorage.clear()
+			store.dispatch('reset')
 
 			if (!res.data.error) state.commit('setUserToken', res.data.output)
 			return res.data
@@ -72,7 +73,7 @@ export default {
 		async register(state, data) {
 			const res = await axios.post('/auth/register', data)
 
-			localStorage.clear()
+			store.dispatch('reset')
 
 			if (!res.data.error) state.commit('setUserToken', res.data.output)
 			return res.data
@@ -89,6 +90,7 @@ export default {
 		},
 		async logout(state) {
 			state.commit('deleteUserToken')
+			store.dispatch('reset')
 		},
 		async makeError(state, pl) {
 			if (!pl) return state.commit('setError', null)

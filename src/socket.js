@@ -27,10 +27,7 @@ class Socket {
 	}
 
 	async init(token) {
-		if (this.socket) {
-			console.log('Socket déjà activée')
-			return this.socket
-		}
+		if (this.socket) return this.socket
 
 		try {
 			this.socket = await this.connectAsync(token)

@@ -39,10 +39,10 @@ export default {
 
 			state.commit('setContactList', res.data.output)
 		},
-		async updateContact(state, user) {
-			const res = await axios.get('/user/getInfo/' + user.id)
+		async updateContact(state, id) {
+			const res = await axios.get('/user/getInfo/' + id)
 
-			state.commit('setContact', user || res.data.output)
+			state.commit('setContact', res.data.output)
 		},
 		async receiveContactUpdate(state, user) {
 			state.commit('setContact', user)

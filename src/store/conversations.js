@@ -16,7 +16,7 @@ export default {
 			return state.currentConversation
 		},
 		getMessages(state) {
-			return state.currentConversation.messages || []
+			return state.currentConversation?.messages || []
 		},
 		getUnreads: (state) => (id) => {
 			if (
