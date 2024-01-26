@@ -25,9 +25,9 @@ export default {
 			return state.list
 		},
 		getContact: (state) => (id) => {
-			if(state.list.find((element) => element.id == id)){
+			if (state.list.find((element) => element.id == id)) {
 				return state.list.find((element) => element.id == id)
-			}else{
+			} else {
 				// TODO CONTACT NOT FOUND
 			}
 			return state.list.find((element) => element.id == id)
@@ -40,7 +40,7 @@ export default {
 			state.commit('setContactList', res.data.output)
 		},
 		async updateContact(state, user) {
-			const res = await axios.get('/contacts/get')
+			const res = await axios.get('/user/getInfo/' + user.id)
 
 			state.commit('setContact', user || res.data.output)
 		},

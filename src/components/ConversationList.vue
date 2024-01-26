@@ -51,17 +51,18 @@ export default {
 	},
 	methods: {
 		...mapActions('conversations', ['displayConversation', 'forget']),
+		...mapActions('contacts', ['updateContact']),
 
-		orderedContacts() {
+		async orderedContacts() {
 			let res = []
 			let convfeed = this.conversations
 			let naturalId = 0
 
 			if (this.showArchives) convfeed = this.archives
 
+			let contact
 			for (const key in convfeed) {
 				let element = convfeed[key]
-				let contact
 				if (this.showArchives) {
 					//Deep copy
 					contact = JSON.parse(
@@ -81,6 +82,10 @@ export default {
 						})
 				} else {
 					contact = this.getContact(element[0])
+					if (!contact) {
+						await this.updateContact(element[0])
+						contact = this.getContact(element[0])
+					}
 				}
 				contact.naturalId = naturalId++
 				res.push(contact)

@@ -5,7 +5,6 @@ export default {
 	state: () => ({
 		currentContact: null,
 		currentConversation: null,
-		userInfo: {},
 		conversations: {},
 		archivedConversations: [],
 	}),
@@ -118,7 +117,10 @@ export default {
 
 			state.conversations[contactId].push(message)
 
-			if (state.currentConversation.contact.id == contactId) {
+			if (
+				state.currentConversation &&
+				state.currentConversation.contact.id == contactId
+			) {
 				state.currentConversation.messages =
 					state.conversations[contactId]
 			}
