@@ -60,8 +60,8 @@ export default {
 
 			if (this.showArchives) convfeed = this.archives
 
-			let contact
 			for (const key in convfeed) {
+				let contact
 				let element = convfeed[key]
 				if (this.showArchives) {
 					//Deep copy
