@@ -104,7 +104,12 @@
 				</div>
 				<footer class="col-12 text-white mt-5 message align-self-end">
 					<div class="text-center py-5">
-						DIX-CORDES {{ new Date().getFullYear() }}
+						<span
+							>DIX-CORDES {{ new Date().getFullYear() }} -
+						</span>
+						<a href="https://github.com/Zulivan/dix-cordes"
+							><i class="fab fa-github"></i> Code source</a
+						>
 					</div>
 				</footer>
 			</div>
@@ -149,11 +154,13 @@ export default {
 
 		async btnRegister(e) {
 			e.preventDefault()
+			this.processing = true
 
 			const res = await this.register({
 				username: this.username,
 				password: this.pwd,
 			})
+			this.processing = false
 
 			if (res.error) return (this.error = res.output)
 			this.$router.push('/app')
