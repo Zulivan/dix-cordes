@@ -12,6 +12,11 @@ export default {
 		setContact(state, contact) {
 			const id = contact.id
 			const item = state.list.findIndex((element) => element.id == id)
+			if (item == -1) {
+				state.list.push(contact)
+				return
+			}
+
 			state.list[item] = contact
 		},
 	},
@@ -20,6 +25,11 @@ export default {
 			return state.list
 		},
 		getContact: (state) => (id) => {
+			if(state.list.find((element) => element.id == id)){
+				return state.list.find((element) => element.id == id)
+			}else{
+				// TODO CONTACT NOT FOUND
+			}
 			return state.list.find((element) => element.id == id)
 		},
 	},

@@ -2,29 +2,33 @@
 	<div class="shadow w-100">
 		<div class="row py-2 w-100">
 			<div class="col-6 d-flex justify-content-center">
-				<button
+				<div
 					@click="this.setView('contacts')"
-					class="btn btn-primary"
+					:class="{ 'active-tab': currentView === 'contacts' }"
+					class="tab"
 				>
 					Contacts
-				</button>
+				</div>
 			</div>
 			<div class="col-6 d-flex justify-content-center">
-				<button
+				<div
 					@click="this.setView('archives')"
-					class="btn btn-primary"
+					:class="{ 'active-tab': currentView === 'archives' }"
+					class="tab"
 				>
 					Conv. Archivées
-				</button>
+				</div>
 			</div>
 
 			<div class="col-12 d-flex justify-content-center">
-				<input
-					class="my-2 w-75"
-					type="text"
-					placeholder="Filtrer par nom"
-					v-model="sidebarFilter"
-				/>
+				<div class="search-bar">
+					<input
+						class="my-2 w-100"
+						type="text"
+						placeholder="Filtrer par nom"
+						v-model="sidebarFilter"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -43,19 +47,37 @@
 				"
 				class="img-fluid rounded-circle message-img mr-2"
 			/>
-			<h5>{{ user.nickname }}</h5>
 			<div class="d-flex">
-				<div
-					class="statusTab mr-1"
-					:style="{ 'background-color': user.status_object.color }"
-				></div>
-				<h6>
-					{{
-						(user.motd && user.motd.length > 26
-							? user.motd.slice(0, 26) + '...'
-							: user.motd) || user.status_object.name
-					}}
-				</h6>
+				<h5
+					style="
+						display: inline;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					"
+				>
+					{{ user.nickname }}
+				</h5>
+			</div>
+			<div class="d-flex">
+				<div class="mr-1">
+					<div
+						class="statusTab"
+						:style="{
+							'background-color': user.status_object.color,
+						}"
+					></div>
+				</div>
+				<span
+					style="
+						display: inline;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					"
+				>
+					{{ user.motd || user.status_object.name }}
+				</span>
 			</div>
 		</div>
 		<div class="d-flex col-12 justify-content-around px-0 pt-2">
@@ -100,3 +122,23 @@ export default {
 	},
 }
 </script>
+
+<style>
+.tab {
+	cursor: pointer;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	margin: 5px;
+}
+
+.active-tab {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.search-bar {
+	display: flex;
+	align-items: center;
+}
+</style>

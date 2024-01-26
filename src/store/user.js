@@ -64,11 +64,15 @@ export default {
 		async login(state, data) {
 			const res = await axios.post('/auth/login', data)
 
+			localStorage.clear()
+
 			if (!res.data.error) state.commit('setUserToken', res.data.output)
 			return res.data
 		},
 		async register(state, data) {
 			const res = await axios.post('/auth/register', data)
+
+			localStorage.clear()
 
 			if (!res.data.error) state.commit('setUserToken', res.data.output)
 			return res.data
@@ -78,10 +82,6 @@ export default {
 			const url = '/user/getInfo/' + id
 			const res = await axios.get(url)
 			if (id == 'self') {
-				if (res.data.output.id !== state.getters.getInfo.id) {
-					localStorage.clear()
-					location.reload()
-				}
 				state.commit('setUser', res.data.output)
 			} else {
 				return res.data

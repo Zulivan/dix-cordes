@@ -31,7 +31,11 @@
 			</div>
 		</div>
 		<div class="col-2 d-flex justify-content-center">
-			<button class="btn btn-primary" @click="archiveCurrentConversation">
+			<button
+				class="btn btn-primary"
+				@click="archiveCurrentConversation"
+				v-show="conversation.type == 'conversation'"
+			>
 				Archiver
 			</button>
 		</div>

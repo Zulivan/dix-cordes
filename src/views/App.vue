@@ -1,6 +1,6 @@
 <template>
 	<div class="container-fluid contacts full-height text-white">
-		<div class="row full-height" v-if="operational()">
+		<div class="row full-height" v-if="isOperational()">
 			<aside
 				class="col-sm-5 col-md-4 col-lg-3 contacts d-flex flex-column"
 			>
@@ -14,7 +14,7 @@
 		</div>
 		<div
 			class="row full-height d-flex align-items-center"
-			v-if="!operational()"
+			v-if="!isOperational()"
 		>
 			<div class="d-flex flex-column mx-auto">
 				<div v-show="!loaded">
@@ -115,7 +115,7 @@ export default {
 			})
 		},
 
-		operational() {
+		isOperational() {
 			if (this.loaded && !this.appError) {
 				return true
 			}

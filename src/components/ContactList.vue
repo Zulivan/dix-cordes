@@ -35,6 +35,7 @@ export default {
 		...mapGetters({
 			selectedContact: 'conversations/getContact',
 			convUnreads: 'conversations/getUnreads',
+			user: 'user/getInfo',
 		}),
 	},
 	methods: {
@@ -42,6 +43,7 @@ export default {
 		...mapActions('contacts', ['retrieveContacts']),
 
 		select(contact) {
+			if (contact.id == this.user.id) return
 			this.play()
 			const payload = {
 				contact,

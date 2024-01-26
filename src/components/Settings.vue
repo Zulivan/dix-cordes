@@ -1,44 +1,65 @@
 <template>
-	<div class="row">
-		<div class="col-12">
-			<h2 class="d-flex justify-content-center">Vos paramètres</h2>
-			<h4 class="d-flex justify-content-center">
-				Modifiez les paramètres de votre compte
-			</h4>
-		</div>
-
-		<div v-if="loaded" class="message col-8">
-			<div>
-				{{ error }}
+	<div class="container">
+		<div class="row">
+			<div class="col-12 text-center mt-4">
+				<h2>Vos paramètres</h2>
+				<h4>Modifiez les paramètres de votre compte</h4>
 			</div>
-			<div class="d-flex justify-content-center">
-				<form @submit="btnSend" class="p-4">
-					<label>Pseudo</label>
-					<input
-						type="text"
-						v-model="nickname"
-						name="nicknameField"
-						id="lnicknameField"
-					/><br />
-					<label>Message personnalisé</label>
-					<input
-						type="text"
-						v-model="motd"
-						name="motdFild"
-						id="lmotdField"
-					/><br />
-					<label>Statut</label>
-					<select v-model="status" @change="btnSend">
-						<option
-							:value="item.id"
-							v-for="item in options.status"
-							:key="item.id"
-						>
-							{{ item.name }}
-						</option></select
-					><br />
-					<input type="Submit" class="btn btn-primary" /><br />
-				</form>
+
+			<div v-if="loaded" class="col-8 mx-auto mt-4">
+				<div class="message">
+					<div>{{ error }}</div>
+					<form @submit.prevent="btnSend" class="p-4">
+						<div class="mb-3">
+							<label for="nicknameField" class="form-label"
+								>Pseudo</label
+							>
+							<input
+								type="text"
+								class="form-control"
+								v-model="nickname"
+								name="nicknameField"
+								id="nicknameField"
+							/>
+						</div>
+
+						<div class="mb-3">
+							<label for="motdField" class="form-label"
+								>Message personnalisé</label
+							>
+							<input
+								type="text"
+								class="form-control"
+								v-model="motd"
+								name="motdField"
+								id="motdField"
+							/>
+						</div>
+
+						<div class="mb-3">
+							<label for="status" class="form-label"
+								>Statut</label
+							>
+							<select
+								class="form-select"
+								v-model="status"
+								@change="btnSend"
+							>
+								<option
+									:value="item.id"
+									v-for="item in options.status"
+									:key="item.id"
+								>
+									{{ item.name }}
+								</option>
+							</select>
+						</div>
+
+						<button type="submit" class="btn btn-success">
+							Modifier
+						</button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>

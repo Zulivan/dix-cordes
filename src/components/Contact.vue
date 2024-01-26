@@ -1,9 +1,11 @@
 <template>
 	<div
 		:id="contact.id"
-		class="p-1 d-flex align-items-center col-12"
+		class="p-1 col-12"
 		:class="{ chat: selected }"
 		style="height: 75px"
+		@mouseover="hover = true"
+		@mouseleave="hover = false"
 	>
 		<div class="m-1 message-img" @click="this.$emit('selectContact')">
 			<img
@@ -21,36 +23,49 @@
 				<b>{{ unreads }}</b>
 			</div>
 		</div>
-		<div
-			class="px-2 display-flex flex-direction-column"
-			style="flex-grow: 1"
-			@click="this.$emit('selectContact')"
-		>
-			<h4>{{ contact.nickname }}</h4>
+		<div @click="this.$emit('selectContact')">
 			<div class="d-flex">
-				<div
-					v-if="contact.status_object"
-					class="statusTab mr-1"
-					:style="{ 'background-color': contact.status_object.color }"
-				></div>
-				<h6>
-					{{
-						(contact.motd &&
-						contact.motd.length > 26 &&
-						!this.fullMotd
-							? contact.motd.slice(0, 26) + '...'
-							: contact.motd) || contact.status_object.name
-					}}
-				</h6>
+				<h4
+					style="
+						display: inline;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					"
+				>
+					{{ contact.nickname }}
+				</h4>
 			</div>
+			<div class="d-flex">
+				<div class="mr-1">
+					<div
+						v-if="contact.status_object"
+						class="statusTab mr-1"
+						:style="{
+							'background-color': contact.status_object.color,
+						}"
+					></div>
+				</div>
+				<span
+					style="
+						display: inline;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					"
+				>
+					{{ contact.motd || contact.status_object.name }}
+				</span>
+			</div>
+			<button
+				class="btn btn-danger"
+				v-if="trigger && hover"
+				style="position: relative; bottom: 50px; left: -50px"
+				@click="trigger.func(contact)"
+			>
+				{{ trigger.icon }}
+			</button>
 		</div>
-		<button
-			class="btn btn-dark"
-			v-if="trigger"
-			@click="trigger.func(contact)"
-		>
-			{{ trigger.icon }}
-		</button>
 	</div>
 </template>
 
@@ -62,6 +77,11 @@ import notifSound from '../assets/audio/app/notification.mp3'
 export default {
 	props: ['contact', 'trigger', 'fullMotd', 'selected'],
 	emits: ['selectContact'],
+	data: function () {
+		return {
+			hover: false,
+		}
+	},
 	computed: {
 		...mapGetters({
 			convUnreads: 'conversations/getUnreads',
