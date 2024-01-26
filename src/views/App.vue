@@ -66,6 +66,7 @@ export default {
 			if (!v) this.$router.push('/app/login')
 		},
 		ongoingConversation(v) {
+			if (!this.isOperational()) return
 			if (v) {
 				this.setView('conversation')
 				document.title = this.selectedContact.nickname
@@ -84,6 +85,7 @@ export default {
 			}
 		},
 		currentView(v) {
+			if (!this.isOperational()) return
 			if (v !== 'conversation') {
 				document.title = v.charAt(0).toUpperCase() + v.slice(1)
 				this.$router.push({
@@ -116,7 +118,7 @@ export default {
 		},
 
 		isOperational() {
-			if (this.loaded && !this.appError) {
+			if (this.loaded && !this.appError && this.selfToken) {
 				return true
 			}
 			return false
