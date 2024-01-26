@@ -43,7 +43,7 @@
 		<div class="col-12 px-0">
 			<img
 				:src="
-					require('@/assets/images/' + (user.image || 'unknown.png'))
+					require('@/assets/images/' + (user?.image || 'unknown.png'))
 				"
 				class="img-fluid rounded-circle message-img mr-2"
 			/>
@@ -56,7 +56,7 @@
 						text-overflow: ellipsis;
 					"
 				>
-					{{ user.nickname }}
+					{{ user?.nickname }}
 				</h5>
 			</div>
 			<div class="d-flex">
@@ -64,7 +64,7 @@
 					<div
 						class="statusTab"
 						:style="{
-							'background-color': user.status_object.color,
+							'background-color': user?.status_object?.color,
 						}"
 					></div>
 				</div>
@@ -76,7 +76,7 @@
 						text-overflow: ellipsis;
 					"
 				>
-					{{ user.motd || user.status_object.name }}
+					{{ user?.motd || user?.status_object?.name }}
 				</span>
 			</div>
 		</div>
