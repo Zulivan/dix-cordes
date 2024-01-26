@@ -38,6 +38,11 @@ export default {
 			play,
 		}
 	},
+	data() {
+		return {
+			debounce: null,
+		}
+	},
 	computed: {
 		...mapGetters({
 			selectedContact: 'conversations/getContact',
@@ -53,7 +58,7 @@ export default {
 		...mapActions('conversations', ['displayConversation', 'forget']),
 		...mapActions('contacts', ['updateContact']),
 
-		async orderedContacts() {
+		orderedContacts() {
 			let res = []
 			let convfeed = this.conversations
 			let naturalId = 0
@@ -61,7 +66,7 @@ export default {
 			if (this.showArchives) convfeed = this.archives
 
 			for (const key in convfeed) {
-				let contact
+				let contact = {}
 				let element = convfeed[key]
 				if (this.showArchives) {
 					//Deep copy
@@ -83,14 +88,16 @@ export default {
 				} else {
 					contact = this.getContact(element[0])
 					if (!contact) {
-						await this.updateContact(element[0])
+						this.updateContact(element[0])
 						contact = this.getContact(element[0])
 					}
 				}
+
+				if (!contact) continue
+
 				contact.naturalId = naturalId++
 				res.push(contact)
 			}
-
 			return res
 		},
 
@@ -106,6 +113,9 @@ export default {
 
 		select(contact) {
 			if (this.isSelected(contact)) return
+
+			if (this.debounce && Date.now() - this.debounce < 1) return
+			this.debounce = Date.now()
 
 			this.play()
 
