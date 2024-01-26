@@ -3,12 +3,14 @@ import createPersistedState from 'vuex-persistedstate'
 import user from './user'
 import conversations from './conversations'
 import contacts from './contacts'
+import peer from './peer'
 
 export default createStore({
 	modules: {
 		user,
 		conversations,
 		contacts,
+		peer,
 	},
 	plugins: [
 		createPersistedState({
