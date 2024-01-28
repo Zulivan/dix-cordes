@@ -1,5 +1,4 @@
 // eslint-disable-next-line new-cap
-import httpServ from 'http'
 import * as sio from 'socket.io'
 import { socketIOAuth } from '../jwt.js'
 import { updateStatus, getUserById } from '../apiServer/methods/user.js'
@@ -8,23 +7,16 @@ import { updateStatus, getUserById } from '../apiServer/methods/user.js'
  */
 class ChatServer {
   /** Initialise
-   * @param {object} app Objet app
+   * @param {object} server Express server
    * @return {void}
    */
-  constructor(app) {
-    // eslint-disable-next-line new-cap
-    const http = httpServ.Server(app)
-
-    this.io = new sio.Server(http, {
+  constructor(server) {
+    this.io = new sio.Server(server, {
       cors: {
         origin: '*',
         credentials: true,
       },
     })
-
-    http.listen(process.env.PORT)
-
-    console.log(http.address())
 
     this.sockets = {}
 
@@ -73,6 +65,7 @@ class ChatServer {
         await updateStatus(userInfo.id, { status: 4 })
         const userObj = await getUserById(userInfo.id)
         self.io.emit('contacts/receiveContactUpdate', userObj)
+        delete self.sockets[userInfo.id]
       })
     })
   }

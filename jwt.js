@@ -31,6 +31,23 @@ async function socketIOAuth(socket) {
   }
 }
 
+/** Valide un token jwt
+ * @param {string} client Peerjs Client
+ * @return {void}
+ */
+async function peerjsAuth(client) {
+  const token = client.token
+
+  if (!token) return
+
+  try {
+    const payload = await jwt.verify(token, process.env.TOKEN_SECRET)
+    return payload
+  } catch (e) {
+    return
+  }
+}
+
 /** Retrouve un token JWT pour l'utilisateur
  * @param {string} req Requête
  * @param {string} res Réponse serveur

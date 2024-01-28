@@ -2,8 +2,8 @@ import auth from './routes/auth.js'
 import user from './routes/user.js'
 import conversations from './routes/conversations.js'
 import contacts from './routes/contacts.js'
-
 import express from 'express'
+import http from 'http'
 
 /** ApiServer instance
  */
@@ -13,6 +13,8 @@ class APIServer {
    */
   constructor() {
     this.app = express()
+    this.server = http.createServer(this.app)
+    this.server.listen(process.env.PORT || 3000)
 
     this.init()
   }
@@ -63,12 +65,12 @@ class APIServer {
 
       res.setHeader(
         'Access-Control-Allow-Methods',
-        'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+        'GET, POST, OPTIONS, PUT, PATCH, DELETE',
       )
 
       res.setHeader(
         'Access-Control-Allow-Headers',
-        'Authorization,X-Requested-With,content-type'
+        'Authorization,X-Requested-With,content-type',
       )
 
       res.setHeader('Access-Control-Allow-Credentials', true)
