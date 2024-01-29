@@ -10,7 +10,10 @@ export default {
 			state.list = contactList
 		},
 		setContact(state, contact) {
-			const id = contact.id
+			const id = contact?.id
+			if (!id) {
+				return
+			}
 			const item = state.list.findIndex((element) => element.id == id)
 			if (item == -1) {
 				state.list.push(contact)

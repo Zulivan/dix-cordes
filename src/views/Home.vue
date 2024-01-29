@@ -11,15 +11,15 @@
 					</h5>
 				</div>
 				<div class="col-12 my-2 p-5 d-flex justify-content-center">
-					<div class="w-25">
-						<router-link to="/app"
-							><button
+					<div class="w-100 w-md-75 w-lg-50">
+						<router-link to="/app">
+							<button
 								type="button"
 								class="btn btn-block btn-lg btn-warning"
 							>
 								Ouvrez l'application dans votre navigateur
-							</button></router-link
-						>
+							</button>
+						</router-link>
 					</div>
 				</div>
 			</div>
@@ -344,5 +344,3 @@
 		</footer>
 	</div>
 </template>
-
-<script></script>
