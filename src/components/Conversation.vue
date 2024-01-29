@@ -6,26 +6,26 @@
 				style="height: 70px"
 				:src="
 					require(
-						'@/assets/images/' +
-							((contact && contact.image) || 'unknown.png')
+						'@/assets/images/' + (contact?.image || 'unknown.png')
 					)
 				"
+				@click="() => initiateCall(contact)"
 			/>
 			<div class="pl-2 d-flex flex-column">
 				<h2 class="align-middle">
 					Conversation avec
-					{{ (contact && contact.nickname) || 'personne' }}
+					{{ contact?.nickname || 'personne' }}
 				</h2>
 				<div class="d-flex">
 					<div
-						v-if="contact.status_object"
+						v-if="contact?.status_object"
 						class="statusTab mr-1"
 						:style="{
-							'background-color': contact.status_object.color,
+							'background-color': contact?.status_object.color,
 						}"
 					></div>
 					<h6>
-						{{ contact.motd || contact.status_object.name }}
+						{{ contact?.motd || contact?.status_object?.name }}
 					</h6>
 				</div>
 			</div>
@@ -40,16 +40,13 @@
 			</button>
 		</div>
 	</div>
+	<ConversationCall v-if="isContactInStreams()" />
 	<div class="messagebox" ref="messageBox">
 		<template v-for="message in renderMessage()" v-bind:key="message.id">
 			<Message :message="message" :view="message.view" />
 		</template>
 	</div>
-	<div
-		v-show="conversation.type == 'conversation'"
-		class="text-center"
-		ref="hb"
-	>
+	<div v-show="conversation.type == 'conversation'" class="text-center">
 		<textarea
 			maxlength="256"
 			ref="keyboardRef"
@@ -58,10 +55,11 @@
 		>
 		</textarea>
 	</div>
-	<div id="typing"></div>
+	<div ref="typing"></div>
 </template>
 
 <script>
+import axios from 'axios'
 import jquery from 'jquery'
 import 'jquery-ui-bundle'
 import 'jquery-ui-bundle/jquery-ui.css'
@@ -70,11 +68,12 @@ import 'virtual-keyboard/dist/js/jquery.keyboard.js'
 import 'virtual-keyboard/dist/css/keyboard.min.css'
 
 import Message from '../components/Message.vue'
+import ConversationCall from '../components/ConversationCall.vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
 	// relating to the attribute define in outer <router-view> tag.
-	components: { Message },
+	components: { Message, ConversationCall },
 	data: function () {
 		return {
 			message: '',
@@ -87,6 +86,9 @@ export default {
 			conversation: 'conversations/getConversation',
 
 			currentView: 'user/getView',
+			token: 'user/getToken',
+
+			streams: 'peer/getRemoteStreamsMetadata',
 		}),
 	},
 	watch: {
@@ -110,6 +112,24 @@ export default {
 			'sendMessage',
 			'archiveCurrentConversation',
 		]),
+		...mapActions('peer', ['sendCallRequest']),
+
+		isContactInStreams() {
+			if (!this.contact) return false
+			for (const stream of this.streams) {
+				console.log(stream?.id, this?.contact?.id)
+				if (stream?.id == this?.contact?.id) return true
+			}
+			return false
+		},
+
+		async initiateCall(contact) {
+			const res = await axios.get('contacts/getPeer/ ' + contact.id)
+			if (res.data.output)
+				this.sendCallRequest({ ...res.data.output, token: this.token })
+			else console.log('error: no peer found')
+		},
+
 		renderMessage() {
 			let prevMessage = null
 
@@ -131,21 +151,11 @@ export default {
 			language: 'fr',
 			maxLength: 255,
 			css: {
-				// input & preview
-				// "label-default" for a darker background
-				// "light" for white text
 				input: 'text-white form-control input-sm chat',
-				// keyboard container
 				container: 'center-block well bg-dark',
-				// default state
 				buttonDefault: 'btn bg-muted',
-				// hovered button
 				buttonHover: 'btn-primary',
-				// Action keys (e.g. Accept, Cancel, Tab, etc);
-				// this replaces "actionClass" option
 				buttonAction: 'active',
-				// used when disabling the decimal button {dec}
-				// when a decimal exists in the input area
 				buttonDisabled: 'disabled',
 			},
 		}
