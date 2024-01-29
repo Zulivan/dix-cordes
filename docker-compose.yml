@@ -1,13 +1,27 @@
 version: '3'
 services:
-  dixcordes:
+  dixcordes-main:
     build: .
     ports:
-      - 9000:80
+      - 9000:9000
     environment:
       TOKEN_SECRET: AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
       DATABASE_URL: postgres://dixcordes_user:dixcordes_password@postgres:5432/dixcordes_db?sslmode=disable
       AES_KEY: EXAMPLE4pwIvnTu5rrM69ymw42YqiZ9Egg8UpSf5wFa6m4o9SmejXhGdtpUelkyK
+      PORT: 9000
+      SERVER_TYPES: socket
+    networks:
+      - dixcordes-network
+  dixcordes-peerjs:
+    build: .
+    ports:
+      - 9001:9001
+    environment:
+      TOKEN_SECRET: AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
+      DATABASE_URL: postgres://dixcordes_user:dixcordes_password@postgres:5432/dixcordes_db?sslmode=disable
+      AES_KEY: EXAMPLE4pwIvnTu5rrM69ymw42YqiZ9Egg8UpSf5wFa6m4o9SmejXhGdtpUelkyK
+      PORT: 9001
+      SERVER_TYPES: peerjs
     networks:
       - dixcordes-network
   postgres:
