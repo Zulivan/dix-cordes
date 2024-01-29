@@ -1,4 +1,4 @@
-FROM node:18-alpine3.18
+FROM node:20-alpine3.18
 
 ENV NODE_ENV=production
 ENV PORT=80
@@ -12,4 +12,4 @@ COPY . /usr/src/app
 
 CMD [ "npm", "start" ]
 
-EXPOSE 80
+EXPOSE $PORT
