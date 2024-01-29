@@ -3,7 +3,7 @@ import models from '../../model.js'
 
 /** Met à hiyr ke statys d'un utilisateur
  * @param {int} id Utilisateur
- * @param {object} updateInfo Infos à maodifier
+ * @param {object} updateInfo Infos à modifier
  * @return {void}
  */
 async function updateStatus(id, updateInfo) {
@@ -23,6 +23,8 @@ async function updateStatus(id, updateInfo) {
  * @return {object}
  */
 async function getUserById(id) {
+  if (!id) return null
+  if (typeof id !== 'number') return null
   const user = await models.User.findByPk(id, {
     attributes: {
       exclude: ['fname', 'lname', 'password'],

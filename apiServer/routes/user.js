@@ -24,7 +24,8 @@ router.get('/getSettings/', async (req, res) => {
 })
 
 router.get('/getInfo/:id', async (req, res) => {
-  const user = await getUserById(req?.params?.id || 0)
+  const id = parseInt(req?.params?.id)
+  const user = await getUserById(id || 0)
 
   if (user) {
     res.apiStatus(user)

@@ -41,6 +41,14 @@ export default class User extends Model {
           type: DataTypes.STRING(255),
           allowNull: true,
         },
+        peerjsrelay: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
+        socketrelay: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
       },
       {
         sequelize,
@@ -54,7 +62,7 @@ export default class User extends Model {
             fields: [{ name: 'id' }],
           },
         ],
-      }
+      },
     )
   }
 }
