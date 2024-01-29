@@ -90,7 +90,7 @@ export default {
 				config: {
 					iceServers: [{ url: 'stun:stun1.l.google.com:19302' }],
 				},
-				debug: 3,
+				debug: process.env.VUE_APP_ENV == 'production' ? 0 : 3,
 				token: token,
 			}
 			context.state.peer = new Peer(payload)
