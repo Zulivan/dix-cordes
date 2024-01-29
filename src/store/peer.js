@@ -85,7 +85,7 @@ export default {
 			const payload = {
 				host: process.env.VUE_APP_PEER_SERVER_HOST,
 				port: process.env.VUE_APP_PEER_SERVER_PORT,
-				secure: false,
+				secure: process.env.VUE_APP_ENV == 'production',
 				path: '/rtc',
 				config: {
 					iceServers: [{ url: 'stun:stun1.l.google.com:19302' }],
