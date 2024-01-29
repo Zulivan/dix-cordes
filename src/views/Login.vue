@@ -171,10 +171,7 @@ export default {
 		},
 
 		viewText() {
-			if (this.view) {
-				return "S'inscrire"
-			}
-			return 'Se connecter'
+			return !this.view ? 'Se connecter' : "S'inscrire"
 		},
 	},
 	created: async function () {
