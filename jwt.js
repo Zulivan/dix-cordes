@@ -71,4 +71,4 @@ function authToken(req, res, next) {
   })
 }
 
-export { generateAccessToken, authToken, socketIOAuth }
+export { generateAccessToken, authToken, socketIOAuth, peerjsAuth }

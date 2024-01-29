@@ -13,8 +13,6 @@ class APIServer {
    */
   constructor() {
     this.app = express()
-    this.server = http.createServer(this.app)
-    this.server.listen(process.env.PORT || 3000)
 
     this.init()
   }

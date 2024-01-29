@@ -34,6 +34,8 @@ async function createUser(info) {
     lname: 'EFG',
     motd: 'Je suis nouveau sur Dix-Cordes',
     status: 1,
+    peerjsrelay: '',
+    socketrelay: '',
     ...info,
     password: await bcrypt.hash(info.password, 10),
   }
