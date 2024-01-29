@@ -12,7 +12,7 @@
 				class="img-fluid rounded-circle"
 				:src="
 					require(
-						'@/assets/images/' + (contact.image || 'unknown.png')
+						'@/assets/images/' + (contact?.image || 'unknown.png')
 					)
 				"
 			/>
@@ -33,16 +33,16 @@
 						text-overflow: ellipsis;
 					"
 				>
-					{{ contact.nickname }}
+					{{ contact?.nickname }}
 				</h4>
 			</div>
 			<div class="d-flex">
 				<div class="mr-1">
 					<div
-						v-if="contact.status_object"
+						v-if="contact?.status_object"
 						class="statusTab mr-1"
 						:style="{
-							'background-color': contact.status_object.color,
+							'background-color': contact?.status_object?.color,
 						}"
 					></div>
 				</div>
@@ -54,7 +54,7 @@
 						text-overflow: ellipsis;
 					"
 				>
-					{{ contact.motd || contact.status_object.name }}
+					{{ contact?.motd || contact?.status_object?.name }}
 				</span>
 			</div>
 			<button

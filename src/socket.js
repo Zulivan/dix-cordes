@@ -33,7 +33,7 @@ class Socket {
 			this.socket = await this.connectAsync(token)
 		} catch (e) {
 			const pl = {
-				reason: 'Connexion impossible serveur Socket.io',
+				reason: 'Connexion impossible...',
 				details: e.message,
 			}
 			this.store.dispatch('user/makeError', pl, { root: true })
@@ -45,7 +45,7 @@ class Socket {
 
 		this.socket.on('disconnect', () => {
 			const pl = {
-				reason: 'Déconnection du serveur Socket.io',
+				reason: 'La connexion a été interrompue...',
 				details:
 					'Merci de patienter le temps que la connexion se rétablisse.',
 			}
