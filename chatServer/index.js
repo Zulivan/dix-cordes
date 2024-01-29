@@ -2,9 +2,7 @@
 import * as sio from 'socket.io'
 import { socketIOAuth } from '../jwt.js'
 import { updateStatus, getUserById } from '../apiServer/methods/user.js'
-
-/** socketServeur instance
- */
+import { getRelay } from '../utils/index.js'
 class ChatServer {
   /** Initialise
    * @param {object} server Express server
@@ -17,6 +15,8 @@ class ChatServer {
         credentials: true,
       },
     })
+
+    this.server = server
 
     this.sockets = {}
 
@@ -52,12 +52,13 @@ class ChatServer {
         socket.emit('user/logout', true)
         return socket.disconnect(true)
       }
-
       self.log('Connecté :', userInfo)
       self.log('Liste', self.sockets)
       self.sockets[userInfo.id] = socket
 
-      await updateStatus(userInfo.id, { status: 1 })
+      const socketRelay = getRelay(socket, process.env.PORT) + '|' + userInfo.id
+      await updateStatus(userInfo.id, { socketrelay: socketRelay, status: 1 })
+
       const userObj = await getUserById(userInfo.id)
       self.io.emit('contacts/receiveContactUpdate', userObj)
 
