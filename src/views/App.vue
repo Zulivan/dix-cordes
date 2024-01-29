@@ -1,5 +1,6 @@
 <template>
 	<div class="container-fluid contacts full-height text-white">
+		<CallNotification v-if="isOperational()" />
 		<div class="row full-height" v-if="isOperational()">
 			<aside
 				class="col-sm-5 col-md-4 col-lg-3 contacts d-flex flex-column"
@@ -29,20 +30,30 @@
 			</div>
 		</div>
 	</div>
+	<CallWidget v-if="isOperational()" />
 </template>
 
 <script>
 import axios from 'axios'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Conversation from '../components/Conversation.vue'
 import Sidebar from '../components/Sidebar.vue'
 import ContactHome from '../components/ContactHome.vue'
 import Settings from '../components/Settings.vue'
+import CallNotification from '../components/CallNotification.vue'
+import CallWidget from '../components/CallWidget.vue'
 
 export default {
 	replace: false,
 	props: ['currentContact', 'currentViewProp'],
-	components: { Conversation, Sidebar, ContactHome, Settings },
+	components: {
+		Conversation,
+		Sidebar,
+		ContactHome,
+		Settings,
+		CallNotification,
+		CallWidget,
+	},
 	data: function () {
 		return {
 			loaded: false,
@@ -63,6 +74,7 @@ export default {
 	},
 	watch: {
 		selfToken(v) {
+			console.log('selfToken', v)
 			if (!v) this.$router.push('/app/login')
 		},
 		ongoingConversation(v) {
@@ -109,6 +121,7 @@ export default {
 			'retrieveMessages',
 		]),
 		...mapActions('contacts', ['retrieveContacts', 'updateContact']),
+		...mapActions('peer', ['initPeer']),
 		...mapMutations('peer', ['setVideoStream']),
 
 		async selectContact(contact) {
@@ -126,7 +139,6 @@ export default {
 		},
 	},
 	created: async function () {
-		// Session recovery
 		this.makeError()
 		if (!this.selfToken) return this.$router.push('/app/login')
 		axios.defaults.headers.common['Authorization'] =
@@ -145,12 +157,15 @@ export default {
 
 		// Load data from API
 		try {
+			const req = await this.retrieveUserInfo('self')
+			if (req?.data?.output === null) throw 'no user info'
 			await this.retrieveContacts()
 			await this.retrieveConversations()
 			this.$socket =
 				(await this.$socket.init(this.selfToken)) || this.$socket
-			await this.retrieveUserInfo('self')
+			await this.initPeer(this.selfToken)
 		} catch (e) {
+			console.log(e)
 			return this.logout()
 		}
 
@@ -170,48 +185,26 @@ export default {
 
 		this.loaded = true
 	},
-	beforeCreate: function () {
-		this.$store.state.peer.on('open', (id) => {
-			this.$store.state.id = id
-		})
-
-		this.$store.state.peer.on('call', (call) => {
-			call.on('stream', (remoteStream) => {
-				console.log('call started')
-				this.$store.state.remoteStreams.push(remoteStream)
-			})
-
-			call.active = false
-			this.$store.state.receiveCalls.push(call)
-		})
-
-		this.$store.state.peer.on('connection', (connection) => {
-			connection.on('open', () => {
-				console.log('connection openned')
-			})
-			connection.on('data', (data) => {
-				if (data == 'PAIR_CLOSED') {
-					this.$store.commit('close', connection.peer)
-				}
-			})
-			connection.on('close', () => {
-				console.log('connection closed')
-			})
-			this.$store.state.receiveConnections.push(connection)
-		})
-	},
-	mounted: async function () {
+	mounted: function () {
 		let getUserMedia =
 			navigator.mediaDevices.getUserMedia ||
 			navigator.mediaDevices.webkitGetUserMedia ||
 			navigator.mediaDevices.mozGetUserMedia
 
-		const media = await getUserMedia({
-			video: true,
-			audio: false,
-		})
-
-		this.setVideoStream(media)
+		if (getUserMedia) {
+			getUserMedia({ video: true, audio: true })
+				.then((mediaStream) => {
+					this.setVideoStream(mediaStream)
+				})
+				.catch((error) => {
+					console.error(
+						'Error accessing webcam and microphone:',
+						error
+					)
+				})
+		} else {
+			console.error('getUserMedia is not supported in this browser')
+		}
 	},
 }
 </script>
