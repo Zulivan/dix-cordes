@@ -23,7 +23,6 @@
 								:disabled="processing"
 							/>
 						</div>
-
 						<div class="mb-3">
 							<label for="rpasswordField" class="form-label"
 								>Mot de passe</label
@@ -37,7 +36,6 @@
 								:disabled="processing"
 							/>
 						</div>
-
 						<button
 							type="submit"
 							name="submit"
@@ -54,7 +52,6 @@
 						class="d-flex flex-column justify-content-center"
 					>
 						<h1>Se connecter</h1>
-
 						<div class="mb-3">
 							<label for="lusernameField" class="form-label"
 								>Pseudonyme</label
@@ -68,7 +65,6 @@
 								:disabled="processing"
 							/>
 						</div>
-
 						<div class="mb-3">
 							<label for="lpasswordField" class="form-label"
 								>Mot de passe</label
@@ -82,7 +78,6 @@
 								:disabled="processing"
 							/>
 						</div>
-
 						<button
 							type="submit"
 							name="submit"
@@ -104,9 +99,7 @@
 				</div>
 				<footer class="col-12 text-white mt-5 message align-self-end">
 					<div class="text-center py-5">
-						<span
-							>DIX-CORDES {{ new Date().getFullYear() }} -
-						</span>
+						<span>DIX-CORDES {{ new Date().getFullYear() }} -</span>
 						<a href="https://github.com/Zulivan/dix-cordes"
 							><i class="fab fa-github"></i> Code source</a
 						>
@@ -121,7 +114,7 @@
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-	data: function () {
+	data() {
 		return {
 			username: '',
 			pwd: '',
@@ -137,7 +130,6 @@ export default {
 	},
 	methods: {
 		...mapActions('user', ['register', 'login']),
-
 		async btnLogin(e) {
 			e.preventDefault()
 			this.processing = true
@@ -148,10 +140,9 @@ export default {
 			})
 
 			this.processing = false
-			if (res.error) return (this.error = res.output)
-			this.$router.push('/app')
+			if (res.error) this.error = res.output
+			else this.$router.push('/app')
 		},
-
 		async btnRegister(e) {
 			e.preventDefault()
 			this.processing = true
@@ -162,22 +153,18 @@ export default {
 			})
 			this.processing = false
 
-			if (res.error) return (this.error = res.output)
-			this.$router.push('/app')
+			if (res.error) this.error = res.output
+			else this.$router.push('/app')
 		},
-
-		async switchView() {
+		switchView() {
 			this.view = !this.view
 		},
-
 		viewText() {
 			return !this.view ? 'Se connecter' : "S'inscrire"
 		},
 	},
-	created: async function () {
-		if (this.selfToken) {
-			return this.$router.push('/app')
-		}
+	created() {
+		if (this.selfToken) this.$router.push('/app')
 	},
 }
 </script>

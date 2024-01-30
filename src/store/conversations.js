@@ -168,8 +168,6 @@ export default {
 		async retrieveConversations() {
 			const res = await axios.get('/conversations/list')
 
-			//state.commit('setConversations', res.data.output)
-
 			return res.data
 		},
 		async deleteMessage(state, id) {

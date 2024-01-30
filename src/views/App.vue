@@ -74,7 +74,6 @@ export default {
 	},
 	watch: {
 		selfToken(v) {
-			console.log('selfToken', v)
 			if (!v) this.$router.push('/app/login')
 		},
 		ongoingConversation(v) {
@@ -176,7 +175,7 @@ export default {
 				this.setView('contacts')
 			} else {
 				const userinfo = req.output
-				await this.updateContact(userinfo)
+				await this.updateContact(userinfo.id)
 				await this.selectContact(userinfo)
 			}
 		} else {
