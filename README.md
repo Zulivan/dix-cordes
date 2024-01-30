@@ -15,9 +15,13 @@ git clone https://github.com/Zulivan/dix-cordes.git
 3. Create a `.env` file in the project's root directory with the following content. Update the values as needed:
 
 ```dotenv
-TOKEN_SECRET=AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
-DATABASE_URL=postgres://dixcordes_user:dixcordes_password@postgres:5432/dixcordes_db?sslmode=disable
+PORT=9000
+PORT_PEER=9001
+IP_ADDRESS=127.0.0.1
+SERVER_TYPES=global
+DATABASE_URL=postgres://dixcordes_user:dixcordes_password@localhost:5432/dixcordes_db?sslmode=disable
 AES_KEY=EXAMPLE4pwIvnTu5rrM69ymw42YqiZ9Egg8UpSf5wFa6m4o9SmejXhGdtpUelkyK
+TOKEN_SECRET=AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
 ``` 
 4. Build and run the Docker containers:
 
