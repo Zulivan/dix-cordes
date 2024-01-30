@@ -9,7 +9,6 @@
 						'@/assets/images/' + (contact?.image || 'unknown.png')
 					)
 				"
-				@click="() => initiateCall(contact)"
 			/>
 			<div class="pl-2 d-flex flex-column">
 				<h2 class="align-middle">
@@ -30,14 +29,25 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-2 d-flex justify-content-center">
-			<button
-				class="btn btn-primary"
+		<div class="col-2 d-flex justify-content-end align-items-center">
+			<i
+				class="fas fa-phone-alt p-2"
+				style="cursor: pointer; font-size: 30px"
+				:style="{ color: callIconColor }"
+				@mouseover="callIconColor = '#00cc00'"
+				@mouseleave="callIconColor = '#999999'"
+				@click="() => initiateCall(contact)"
+				v-show="conversation.type == 'conversation'"
+			></i>
+			<i
+				class="fas fa-archive p-2"
+				style="cursor: pointer; font-size: 30px"
+				:style="{ color: archiveIconColor }"
+				@mouseover="archiveIconColor = '#00cc00'"
+				@mouseleave="archiveIconColor = '#999999'"
 				@click="archiveCurrentConversation"
 				v-show="conversation.type == 'conversation'"
-			>
-				Archiver
-			</button>
+			></i>
 		</div>
 	</div>
 	<ConversationCall v-if="isContactInStreams()" />
@@ -77,6 +87,8 @@ export default {
 	data: function () {
 		return {
 			message: '',
+			callIconColor: '#999999',
+			archiveIconColor: '#999999',
 		}
 	},
 	computed: {
@@ -117,7 +129,6 @@ export default {
 		isContactInStreams() {
 			if (!this.contact) return false
 			for (const stream of this.streams) {
-				console.log(stream?.id, this?.contact?.id)
 				if (stream?.id == this?.contact?.id) return true
 			}
 			return false
