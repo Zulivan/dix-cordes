@@ -11,21 +11,11 @@ export default {
 		sidebarView: 'contacts',
 	}),
 	getters: {
-		getInfo(state) {
-			return state.userInfo
-		},
-		getToken(state) {
-			return state.userToken
-		},
-		getView(state) {
-			return state.currentView
-		},
-		getSidebarView(state) {
-			return state.sidebarView
-		},
-		getErrors(state) {
-			return state.appError
-		},
+		getInfo: (state) => state.userInfo,
+		getToken: (state) => state.userToken,
+		getView: (state) => state.currentView,
+		getSidebarView: (state) => state.sidebarView,
+		getErrors: (state) => state.appError,
 	},
 	mutations: {
 		deleteUserToken(state) {
