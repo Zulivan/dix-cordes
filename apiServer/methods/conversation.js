@@ -6,7 +6,17 @@ import models from '../../model.js'
  * @return {void}
  */
 function getAll(userId) {
-  return 'ok'
+  // Get all conversations
+  return models.Message.findAll({
+    raw: false,
+    where: {
+      [sequelize.Op.or]: [{ recipient: userId }, { sender: userId }],
+    },
+    include: [
+      { as: 'recipient_user', model: models.User },
+      { as: 'sender_user', model: models.User },
+    ],
+  })
 }
 
 /** Récupère les messages d'une conversation
