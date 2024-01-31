@@ -120,7 +120,8 @@ const actions = {
 			)
 
 			if (remoteStreamIndex > -1) {
-				call.answer(state.myLocalVideoStream)
+				call.answer()
+				call.active = true
 			} else {
 				const callIndex = state.receiveCalls.findIndex(
 					(item) => item.peer === call.peer
@@ -167,14 +168,14 @@ const actions = {
 
 		const handleIncomingCall = () => {
 			const lastCall = state.receiveCalls[state.receiveCalls.length - 1]
-			lastCall.answer(state.myLocalVideoStream)
+			lastCall.answer()
 			lastCall.active = true
 			commit('removeReceiveCall', payload)
 		}
 
 		const handleExistingCall = (index) => {
 			const call = state.receiveCalls[index]
-			call.answer(state.myLocalVideoStream)
+			call.answer()
 			call.active = true
 			commit('removeReceiveCall', payload)
 		}
