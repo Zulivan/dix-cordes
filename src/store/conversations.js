@@ -1,169 +1,169 @@
 import axios from 'axios'
 
+// currentConversation:
+// type: conversation | group | channel
+// id: identifier
+// messages: messages array
 export default {
 	namespaced: true,
 	state: () => ({
-		currentContact: null,
-		currentConversation: null,
+		currentContactId: null,
 		conversations: {},
 		archivedConversations: [],
 	}),
 	getters: {
-		getContact(state) {
-			return state.currentContact
+		getCurrentContactId(state) {
+			return state.currentContactId
 		},
-		getConversation(state) {
-			return state.currentConversation
+		getConversation: (state) => (id) => {
+			return state.conversations[id]
+		},
+		getCurrentConversation(state) {
+			return state.conversations[state.currentContactId]
 		},
 		getMessages(state) {
-			return state.currentConversation?.messages || []
+			return state.conversations[state.currentContactId]?.messages || []
 		},
 		getUnreads: (state) => (id) => {
-			if (
-				!state.conversations[id] ||
-				!Array.isArray(state.conversations[id])
-			) {
+			if (!state.conversations[id]) {
 				return 0
 			}
-			const conv = state.conversations[id] || []
+			const conv = state.conversations[id]?.messages || []
 
 			return conv.filter(
 				(message) => !message.isread && message.sender_user.id == id
 			).length
 		},
 		getConversations(state) {
-			let sortable = []
-
-			for (const [userId, messages] of Object.entries(
-				state.conversations
-			)) {
-				if (
-					messages &&
-					Array.isArray(messages) &&
-					messages.length > 0
-				) {
-					sortable.push([userId, messages[messages.length - 1].date])
-				}
-			}
-
-			sortable.sort(function (a, b) {
-				return new Date(b[1]) - new Date(a[1])
-			})
-
-			return sortable
+			return Object.keys(state.conversations)
+				.filter((key) => {
+					const conv = state.conversations[key]
+					return (
+						conv.type === 'conversation' &&
+						conv.messages &&
+						Array.isArray(conv.messages) &&
+						conv.messages.length > 0
+					)
+				})
+				.map((key) => [
+					key,
+					state.conversations[key].messages[
+						state.conversations[key].messages.length - 1
+					].date,
+				])
+				.sort((a, b) => new Date(b[1]) - new Date(a[1]))
 		},
 		getArchivedConversations(state) {
-			return state.archivedConversations
+			// return all conversations that have archived as type
+			return Object.keys(state.conversations)
+				.filter((key) => {
+					const conv = state.conversations[key]
+					return (
+						conv.type === 'archived' &&
+						conv.messages &&
+						Array.isArray(conv.messages) &&
+						conv.messages.length > 0
+					)
+				})
+				.map((key) => [
+					key,
+					state.conversations[key].messages[
+						state.conversations[key].messages.length - 1
+					].date,
+				])
+				.sort((a, b) => new Date(b[1]) - new Date(a[1]))
 		},
 	},
 	mutations: {
-		async setContactMutator(state, contact) {
-			state.currentContact = contact
+		async setCurrentContactId(state, id) {
+			state.currentContactId = id
 		},
-		async archiveConversation(state, data) {
-			state.archivedConversations.push({
-				...data,
-				date: Date.now(),
-			})
+		async archiveConversation(state, contactId) {
+			state.conversations[contactId] = {
+				...state.conversations[contactId],
+				type: 'archived',
+			}
 		},
 		async setCurrentConversation(state, payload) {
-			let convList, convo
-			if (payload.type == 'conversation') {
-				convList = state.conversations
+			let convList = state.conversations
 
-				if (!convList[payload.convId]) convList[payload.convId] = []
+			if (!convList[payload.contactId])
+				convList[payload.contactId] = {
+					messages: [],
+					contactId: payload.contactId,
+					type: payload.type,
+				}
 
-				convo = convList[payload.convId]
-			} else {
-				convList = state.archivedConversations
-
-				convo = convList[payload.convId].messages
-			}
-
-			state.currentConversation = { ...payload, messages: convo }
+			state.currentContactId = payload.contactId
 		},
 		async setCurrentConversationMessages(state, messages) {
-			const contact = state.currentContact
+			const contactId = state.currentContactId
 
-			state.conversations[contact.id] = messages
-			state.currentConversation.messages = messages
+			state.conversations[contactId].messages = messages
 		},
 		async deleteMessage(state, message) {
-			const conv = state.conversations[message.conversation]
+			const conv = state.conversations[message.conversation].messages
 			conv.splice(
 				conv.findIndex((element) => element.id == message.id),
 				1
 			)
-
-			if (
-				message.conversation == state.currentConversation.contact.id &&
-				state.currentConversation.type == 'conversation'
-			) {
-				state.currentConversation.messages = conv
-			}
 		},
-		async forgetMutator(state, pl) {
-			delete state.conversations[pl || state.currentContact.id]
+		async forgetConversation(state, id) {
+			delete state.conversations[id || state.currentContactId]
 		},
 		async receiveMessage(state, message) {
 			let contactId = message.sender_user.id
 			if (message.initiator) contactId = message.recipient_user.id
 
-			if (
-				!state.conversations[contactId] ||
-				!Array.isArray(state.conversations[contactId])
-			)
-				state.conversations[contactId] = []
-
-			state.conversations[contactId].push(message)
-
-			if (
-				state.currentConversation &&
-				state.currentConversation.contact.id == contactId
-			) {
-				state.currentConversation.messages =
-					state.conversations[contactId]
-			}
+			if (!state.conversations[contactId])
+				state.conversations[contactId] = {
+					messages: [],
+					contactId,
+					type: 'conversation',
+				}
+			state.conversations[contactId].type = 'conversation'
+			state.conversations[contactId].messages.push(message)
 		},
 	},
 	actions: {
-		async setContact(state, contact) {
-			state.commit('setContactMutator', contact)
-		},
 		async displayConversation(state, payload) {
-			state.commit('setContactMutator', payload.contact)
+			state.commit('setCurrentContactId', payload.contactId)
+
+			if (!payload.type) payload.type = 'conversation'
+
+			state.commit('setCurrentConversation', payload)
 			if (payload.type == 'conversation')
 				state.dispatch('retrieveMessages')
-			state.commit('setCurrentConversation', payload)
 		},
 		async readAll(state) {
-			const contact = state.getters.getContact
-
-			if (!contact) return true
+			const contactId = state.state.currentContactId
+			if (!contactId) return true
 
 			const res = await axios.post('/conversations/readAll', {
-				sender: contact.id,
+				sender: contactId,
 			})
 			return res.data
 		},
 		async archiveCurrentConversation(state) {
-			const contact = state.getters.getContact
-			const messages = state.getters.getMessages
+			const contactId = state.state.currentContactId
 
-			state.commit('archiveConversation', { contact, messages })
+			state.commit('archiveConversation', contactId)
 		},
 		async retrieveMessages(state) {
-			const contact = state.getters.getContact
+			const contactId = state.state.currentContactId
 
-			if (!contact) return true
+			if (!contactId) return true
 
 			const res = await axios.post('/conversations/messages', {
-				sender: contact.id,
+				sender: contactId,
 			})
 
 			state.commit('setCurrentConversationMessages', res.data.output)
 
 			return res.data
+		},
+		async unselectConversation(state) {
+			state.commit('setCurrentContactId', null)
 		},
 		async retrieveConversations() {
 			const res = await axios.get('/conversations/list')
@@ -189,11 +189,11 @@ export default {
 			state.commit('receiveMessage', pl)
 		},
 		async sendMessage(state, message) {
-			const contact = state.getters.getContact
-
+			const contactId = state.state.currentContactId
+			if (!contactId) return true
 			const res = await axios.post('/conversations/message', {
 				message,
-				recipient: contact.id,
+				recipient: contactId,
 			})
 
 			state.commit('receiveMessage', {
@@ -204,7 +204,7 @@ export default {
 			return res.data
 		},
 		async forget(state, pl) {
-			state.commit('forgetMutator', pl)
+			state.commit('forgetConversation', pl)
 		},
 	},
 }
