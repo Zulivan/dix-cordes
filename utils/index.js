@@ -1,3 +1,5 @@
+import os from 'os'
+
 function getLocalIpAddress() {
   const networkInterfaces = os.networkInterfaces()
   let localIpAddress
