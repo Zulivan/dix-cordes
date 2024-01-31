@@ -1,15 +1,12 @@
 <template>
-	<div style="flex-grow: 1; flex-basis: 0; overflow: auto" class="row">
-		<div class="w-100">
-			<template v-for="contact in contacts" v-bind:key="contact.id">
-				<Contact
-					:contact="contact"
-					:fullMotd="this.fullMotd"
-					v-show="filterCheck(contact)"
-					@selectContact="this.select(contact)"
-				/>
-			</template>
-		</div>
+	<div class="row" :style="{ height: height, overflow: 'auto' }">
+		<template v-for="contact in contacts" v-bind:key="contact.id">
+			<Contact
+				:contact="contact"
+				v-show="filterCheck(contact)"
+				@selectContact="this.select(contact)"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -22,7 +19,7 @@ import clickSound from '../assets/audio/app/pop.mp3'
 
 export default {
 	// relating to the attribute define in outer <router-view> tag.
-	props: ['contacts', 'filter', 'fullMotd'],
+	props: ['contacts', 'filter', 'height'],
 	components: { Contact },
 	setup() {
 		const { play } = useSound(clickSound)
@@ -30,6 +27,9 @@ export default {
 		return {
 			play,
 		}
+	},
+	mounted() {
+		this.retrieveContacts()
 	},
 	computed: {
 		...mapGetters({
@@ -41,14 +41,11 @@ export default {
 	methods: {
 		...mapActions('conversations', ['displayConversation']),
 		...mapActions('contacts', ['retrieveContacts']),
-
 		select(contact) {
 			if (contact.id == this.user.id) return
 			this.play()
 			const payload = {
-				contact,
-				convId: contact.id,
-				type: 'conversation',
+				contactId: contact.id,
 			}
 			this.displayConversation(payload)
 		},
@@ -62,9 +59,6 @@ export default {
 					.indexOf(this.filter.toLowerCase()) > -1
 			)
 		},
-	},
-	mounted() {
-		this.retrieveContacts()
 	},
 }
 </script>

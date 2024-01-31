@@ -1,90 +1,90 @@
 <template>
 	<div class="shadow w-100">
-		<div class="row py-2 w-100">
-			<div class="col-6 d-flex justify-content-center">
-				<div
-					@click="this.setView('contacts')"
-					:class="{ 'active-tab': currentView === 'contacts' }"
-					class="tab"
-				>
-					Contacts
-				</div>
+		<div class="row p-0" ref="searchAndTabs">
+			<div class="col-12 d-flex justify-content-center my-1">
+				<input
+					class="w-100 form-control bg-dark border-primary text-white"
+					type="text"
+					placeholder="Rechercher..."
+					v-model="sidebarFilter"
+				/>
 			</div>
-			<div class="col-6 d-flex justify-content-center">
-				<div
-					@click="this.setView('archives')"
-					:class="{ 'active-tab': currentView === 'archives' }"
-					class="tab"
-				>
-					Conv. Archivées
-				</div>
-			</div>
-
-			<div class="col-12 d-flex justify-content-center">
-				<div class="search-bar">
-					<input
-						class="my-2 w-100"
-						type="text"
-						placeholder="Filtrer par nom"
-						v-model="sidebarFilter"
-					/>
-				</div>
+			<div class="col-12">
+				<ul class="nav nav-tabs" role="tablist">
+					<li v-for="tab in tabs" :key="tab.id" class="nav-item">
+						<a
+							@click="setView(tab.view)"
+							:class="{ active: currentSidebarView === tab.view }"
+							class="nav-link"
+							data-toggle="tab"
+							role="tab"
+							:aria-controls="tab.view"
+							:aria-selected="currentSidebarView === tab.view"
+						>
+							{{ tab.label }}
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
-	</div>
 
-	<ConversationList
-		:contacts="contacts"
-		:filter="sidebarFilter"
-		:showArchives="this.currentSidebarView == 'archives'"
-	/>
-
-	<div class="row p-2 chat p-1">
-		<div class="col-12 px-0">
-			<img
-				:src="
-					require('@/assets/images/' + (user?.image || 'unknown.png'))
-				"
-				class="img-fluid rounded-circle message-img mr-2"
-			/>
-			<div class="d-flex">
-				<h5
-					style="
-						display: inline;
-						white-space: nowrap;
-						overflow: hidden;
-						text-overflow: ellipsis;
-					"
-				>
-					{{ user?.nickname }}
-				</h5>
-			</div>
-			<div class="d-flex">
-				<div class="mr-1">
-					<div
-						class="statusTab"
-						:style="{
-							'background-color': user?.status_object?.color,
-						}"
-					></div>
-				</div>
-				<span
-					style="
-						display: inline;
-						white-space: nowrap;
-						overflow: hidden;
-						text-overflow: ellipsis;
-					"
-				>
-					{{ user?.motd || user?.status_object?.name }}
-				</span>
+		<div class="tab-content" ref="tabContent">
+			<div
+				v-for="tab in tabs"
+				:key="tab.id"
+				class="tab-pane fade p-0"
+				:class="{ 'show active': currentSidebarView === tab.view }"
+				:role="'tabpanel'"
+				:aria-labelledby="`${tab.view}-tab`"
+			>
+				<!-- Content for each tab -->
+				<ConversationList
+					:contacts="contacts"
+					:filter="sidebarFilter"
+					:showArchives="currentSidebarView === 'archives'"
+					:height="conversationListHeight"
+				/>
 			</div>
 		</div>
-		<div class="d-flex col-12 justify-content-around px-0 pt-2">
-			<button @click="logout" class="btn btn-primary">Déconnecter</button>
-			<button @click="setView('settings')" class="btn btn-primary">
-				Paramètres
-			</button>
+
+		<!-- User details at the bottom of the sidebar -->
+		<div class="row p-2 chat p-1" ref="userDetails">
+			<div class="col-12 px-0">
+				<img
+					:src="
+						require(
+							`@/assets/images/${user?.image || 'unknown.png'}`
+						)
+					"
+					class="img-fluid rounded-circle message-img mr-2"
+				/>
+				<div class="d-flex flex-column">
+					<h5 class="mb-1">{{ user?.nickname }}</h5>
+					<div class="d-flex align-items-center mb-1">
+						<div class="mr-1">
+							<div
+								class="statusTab"
+								:style="{
+									'background-color':
+										user?.status_object?.color,
+								}"
+							></div>
+						</div>
+						<span>{{
+							user?.motd || user?.status_object?.name
+						}}</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="d-flex col-12 justify-content-start px-0 pt-2">
+				<button @click="logout" class="btn btn-danger mx-1">
+					Se déconnecter
+				</button>
+				<button @click="setView('settings')" class="btn btn-warning">
+					Paramètres
+				</button>
+			</div>
 		</div>
 	</div>
 </template>
@@ -92,53 +92,71 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import ConversationList from './ConversationList.vue'
-
 export default {
-	replace: false,
 	components: { ConversationList },
 	data() {
 		return {
 			sidebarFilter: null,
-			conversationMessages: {},
+			conversationListHeight: '0px',
 		}
+	},
+	mounted() {
+		this.setConversationListHeight()
+		window.addEventListener('resize', this.setConversationListHeight)
+	},
+	methods: {
+		...mapActions('user', ['logout', 'setView']),
+		setConversationListHeight() {
+			const viewportHeight = window.innerHeight
+			const searchAndTabs = this.$refs.searchAndTabs
+			const userDetails = this.$refs.userDetails
+			if (!searchAndTabs || !userDetails) return
+
+			const height =
+				viewportHeight -
+				searchAndTabs.clientHeight -
+				userDetails.clientHeight
+
+			this.conversationListHeight = height + 'px'
+		},
 	},
 	computed: {
 		...mapGetters({
 			user: 'user/getInfo',
-			currentView: 'user/getView',
 			currentSidebarView: 'user/getSidebarView',
-
 			contacts: 'contacts/getContacts',
 		}),
-	},
-	methods: {
-		...mapActions('user', ['logout', 'setView']),
-
-		name() {
-			const str = this.currentView
-
-			return str.charAt(0).toUpperCase() + str.slice(1)
+		tabs() {
+			return [
+				{ id: 1, view: 'contacts', label: 'Contacts' },
+				{ id: 2, view: 'archives', label: 'Conv. Archivées' },
+			]
 		},
 	},
 }
 </script>
 
-<style>
-.tab {
+<style scoped>
+.nav-link {
+	border-radius: 0;
+	margin: 0;
 	cursor: pointer;
-	padding: 10px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	margin: 5px;
 }
 
-.active-tab {
+.nav-link.active {
 	background-color: #007bff;
 	color: #fff;
 }
 
-.search-bar {
-	display: flex;
-	align-items: center;
+.nav-tabs {
+	border-bottom: 1px solid #dee2e6;
+}
+
+.tab-content {
+	flex: 1 1 auto;
+}
+
+.tab-pane {
+	padding: 15px;
 }
 </style>

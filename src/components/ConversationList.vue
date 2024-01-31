@@ -1,8 +1,16 @@
 <template>
-	<div style="flex-grow: 1; flex-basis: 0; overflow: auto" class="row">
-		<div class="w-100">
-			<div class="py-5 p-2" v-if="orderedContacts().length == 0">
-				Pas de conversations en cours
+	<div ref="container-above" class="row">
+		<div
+			ref="container"
+			class="w-100"
+			:style="{ height: height, overflow: 'auto' }"
+		>
+			<div class="px-5" v-if="orderedContacts().length == 0">
+				{{
+					showArchives
+						? 'Aucune archive sauvegardée'
+						: 'Aucune conversation en cours'
+				}}
 			</div>
 			<div
 				v-for="contact in orderedContacts()"
@@ -28,8 +36,7 @@ import Contact from './Contact.vue'
 import clickSound from '../assets/audio/app/pop.mp3'
 
 export default {
-	// relating to the attribute define in outer <router-view> tag.
-	props: ['contacts', 'filter', 'showArchives'],
+	props: ['contacts', 'filter', 'showArchives', 'height'],
 	components: { Contact },
 	setup() {
 		const { play } = useSound(clickSound)
@@ -45,9 +52,9 @@ export default {
 	},
 	computed: {
 		...mapGetters({
-			selectedContact: 'conversations/getContact',
+			selectedContactId: 'conversations/getCurrentContactId',
 			conversations: 'conversations/getConversations',
-			conversation: 'conversations/getConversation',
+			conversation: 'conversations/getCurrentConversation',
 			archives: 'conversations/getArchivedConversations',
 			getContact: 'contacts/getContact',
 
@@ -59,46 +66,18 @@ export default {
 		...mapActions('contacts', ['updateContact']),
 
 		orderedContacts() {
-			let res = []
-			let convfeed = this.conversations
+			const convfeed = this.showArchives
+				? this.archives
+				: this.conversations
 			let naturalId = 0
 
-			if (this.showArchives) convfeed = this.archives
-
-			for (const key in convfeed) {
-				let contact = {}
-				let element = convfeed[key]
-				if (this.showArchives) {
-					//Deep copy
-					contact = JSON.parse(
-						JSON.stringify(this.getContact(element.contact.id))
-					)
-
-					contact.convId = key
-					contact.status_object = null
-					contact.ignoreUnreads = true
-					contact.motd =
-						'Archive ' +
-						new Date(element.date).toLocaleTimeString('en-GB', {
-							month: '2-digit',
-							day: '2-digit',
-							hour: '2-digit',
-							minute: '2-digit',
-						})
-				} else {
-					contact = this.getContact(element[0])
-					if (!contact) {
-						this.updateContact(element[0])
-						contact = this.getContact(element[0])
-					}
-				}
-
-				if (!contact) continue
-
-				contact.naturalId = naturalId++
-				res.push(contact)
-			}
-			return res
+			return Object.values(convfeed)
+				.map(([contactId]) => {
+					let contact = this.getContact(contactId)
+					if (!contact) this.updateContact(contactId)
+					return contact && { ...contact, naturalId: naturalId++ }
+				})
+				.filter(Boolean)
 		},
 
 		convTrigger() {
@@ -119,12 +98,9 @@ export default {
 
 			this.play()
 
-			let payload = {
-				contact,
-				convId: contact.convId || contact.id,
-				type: 'conversation',
+			const payload = {
+				contactId: contact.id,
 			}
-
 			if (this.showArchives) {
 				payload.type = 'archive'
 			}
@@ -132,14 +108,7 @@ export default {
 		},
 
 		isSelected(contact) {
-			if (this.showArchives) {
-				return this.conversation.convId == contact.convId
-			} else {
-				return (
-					this.selectedContact &&
-					this.selectedContact.id == contact.id
-				)
-			}
+			return this.selectedContactId == contact.id
 		},
 
 		filterCheck(contact) {
