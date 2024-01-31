@@ -10,7 +10,12 @@
 			<div class="col-sm-7 col-md-8 col-lg-9 chat d-flex flex-column">
 				<ContactHome v-if="currentView == 'contacts'" />
 				<Settings v-if="currentView == 'settings'" />
-				<Conversation v-if="ongoingConversation && selectedContact" />
+				<Conversation
+					v-if="
+						currentView == 'conversation' ||
+						currentView == 'archives'
+					"
+				/>
 			</div>
 		</div>
 		<div
@@ -44,8 +49,8 @@ import CallNotification from '../components/CallNotification.vue'
 import CallWidget from '../components/CallWidget.vue'
 
 export default {
-	replace: false,
-	props: ['currentContact', 'currentViewProp'],
+	inheritAttrs: false,
+	props: ['currentContact', 'currentViewProp', 'currentArchive'],
 	components: {
 		Conversation,
 		Sidebar,
@@ -66,8 +71,8 @@ export default {
 			currentView: 'user/getView',
 			appError: 'user/getErrors',
 
-			ongoingConversation: 'conversations/getConversation',
-			selectedContact: 'conversations/getContact',
+			ongoingConversation: 'conversations/getCurrentConversation',
+			selectedContact: 'conversations/getCurrentContactId',
 
 			contacts: 'contacts/getContacts',
 		}),
@@ -80,17 +85,19 @@ export default {
 			if (!this.isOperational()) return
 			if (v) {
 				this.setView('conversation')
-				document.title = this.selectedContact.nickname
+				const contact = this.contacts.find((c) => c.id == v.contactId)
+
+				document.title = contact.nickname
 
 				if (v.type == 'conversation') {
 					this.$router.push({
 						name: 'ApplicationContactInput',
-						params: { currentContact: this.selectedContact.id },
+						params: { currentContact: contact.id },
 					})
 				} else {
 					this.$router.push({
 						name: 'ApplicationArchiveInput',
-						params: { currentArchive: v.convId },
+						params: { currentArchive: contact.id },
 					})
 				}
 			}
@@ -103,7 +110,7 @@ export default {
 					name: 'ApplicationViewInput',
 					params: { currentViewProp: v },
 				})
-				this.setContact(null)
+				this.setCurrentContactId(null)
 			}
 		},
 	},
@@ -115,20 +122,15 @@ export default {
 			'makeError',
 		]),
 		...mapActions('conversations', [
-			'setContact',
+			'setCurrentContactId',
 			'retrieveConversations',
 			'retrieveMessages',
+			'displayConversation',
 		]),
-		...mapActions('contacts', ['retrieveContacts', 'updateContact']),
+		...mapActions('contacts', ['retrieveContacts']),
 		...mapActions('peer', ['initPeer']),
 		...mapMutations('peer', ['setVideoStream']),
-
-		async selectContact(contact) {
-			this.$router.push({
-				name: 'ApplicationContactInput',
-				params: { currentContact: contact.id },
-			})
-		},
+		...mapMutations('contacts', ['setContactData']),
 
 		isOperational() {
 			if (this.loaded && !this.appError && this.selfToken) {
@@ -168,15 +170,35 @@ export default {
 			return this.logout()
 		}
 
-		//Override store from router props
 		if (this.currentContact) {
+			this.setView('conversation')
 			const req = await this.retrieveUserInfo(this.currentContact)
 			if (req.error) {
 				this.setView('contacts')
 			} else {
-				const userinfo = req.output
-				await this.updateContact(userinfo.id)
-				await this.selectContact(userinfo)
+				const contact = req.output
+				await this.setContactData(contact)
+				this.$router.push({
+					name: 'ApplicationContactInput',
+					params: { currentContact: contact.id },
+				})
+				const payload = {
+					contactId: contact.id,
+					type: 'conversation',
+				}
+				this.displayConversation(payload)
+			}
+		} else if (this.currentArchive) {
+			this.setView('archives')
+			const req = await this.retrieveUserInfo(this.currentArchive)
+			if (req.error) {
+				this.setView('contacts')
+			} else {
+				const payload = {
+					contactId: req.output.id,
+					type: 'archive',
+				}
+				this.displayConversation(payload)
 			}
 		} else {
 			await this.setView(this.currentViewProp || 'contacts')
