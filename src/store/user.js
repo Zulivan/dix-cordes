@@ -40,6 +40,11 @@ export default {
 	actions: {
 		async setView(state, viewVal) {
 			state.commit('setUserCurrentView', viewVal)
+			if (viewVal == 'archives' || viewVal == 'contacts') {
+				store.dispatch('conversations/unselectConversation', null, {
+					root: true,
+				})
+			}
 		},
 		async updateInfo(state, data) {
 			const res = await axios.put('/user/update', data)
@@ -71,11 +76,15 @@ export default {
 		async retrieveUserInfo(state, userid) {
 			let id = userid || 'self'
 			const url = '/user/getInfo/' + id
-			const res = await axios.get(url)
-			if (id == 'self') {
-				state.commit('setUser', res.data.output)
-			} else {
-				return res.data
+			try {
+				const res = await axios.get(url)
+				if (id == 'self') {
+					state.commit('setUser', res?.data?.output)
+				} else {
+					return res.data
+				}
+			} catch (e) {
+				console.log(e)
 			}
 		},
 		async logout(state) {

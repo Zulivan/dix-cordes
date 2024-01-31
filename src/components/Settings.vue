@@ -69,8 +69,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 export default {
-	replace: false,
-	components: {},
 	data() {
 		return {
 			loaded: false,

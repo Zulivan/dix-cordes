@@ -1,6 +1,5 @@
 <template>
 	<div
-		:id="contact.id"
 		class="p-1 col-12"
 		:class="{ chat: selected }"
 		style="height: 75px"
@@ -75,7 +74,7 @@ import { useSound } from '@vueuse/sound'
 import notifSound from '../assets/audio/app/notification.mp3'
 
 export default {
-	props: ['contact', 'trigger', 'fullMotd', 'selected'],
+	props: ['contact', 'trigger', 'selected'],
 	emits: ['selectContact'],
 	data: function () {
 		return {

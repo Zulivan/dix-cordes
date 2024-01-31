@@ -31,13 +31,16 @@
 		</div>
 		<div class="col-2 d-flex justify-content-end align-items-center">
 			<i
-				class="fas fa-phone-alt p-2"
+				:class="{
+					'fas fa-phone-alt p-2': !isContactInStreams(),
+					'fas fa-phone-slash p-2': isContactInStreams(),
+				}"
 				style="cursor: pointer; font-size: 30px"
 				:style="{ color: callIconColor }"
 				@mouseover="callIconColor = '#00cc00'"
 				@mouseleave="callIconColor = '#999999'"
 				@click="() => initiateCall(contact)"
-				v-show="conversation.type == 'conversation'"
+				v-show="conversation?.type == 'conversation'"
 			></i>
 			<i
 				class="fas fa-archive p-2"
@@ -46,7 +49,7 @@
 				@mouseover="archiveIconColor = '#00cc00'"
 				@mouseleave="archiveIconColor = '#999999'"
 				@click="archiveCurrentConversation"
-				v-show="conversation.type == 'conversation'"
+				v-show="conversation?.type == 'conversation'"
 			></i>
 		</div>
 	</div>
@@ -56,7 +59,7 @@
 			<Message :message="message" :view="message.view" />
 		</template>
 	</div>
-	<div v-show="conversation.type == 'conversation'" class="text-center">
+	<div v-show="conversation?.type == 'conversation'" class="text-center">
 		<textarea
 			maxlength="256"
 			ref="keyboardRef"
@@ -93,15 +96,21 @@ export default {
 	},
 	computed: {
 		...mapGetters({
-			contact: 'conversations/getContact',
+			contactId: 'conversations/getCurrentContactId',
 			messages: 'conversations/getMessages',
-			conversation: 'conversations/getConversation',
+			conversation: 'conversations/getCurrentConversation',
 
 			currentView: 'user/getView',
 			token: 'user/getToken',
 
 			streams: 'peer/getRemoteStreamsMetadata',
 		}),
+
+		contact: function () {
+			return this.contactId
+				? this.$store.getters['contacts/getContact'](this.contactId)
+				: null
+		},
 	},
 	watch: {
 		message() {
@@ -135,7 +144,7 @@ export default {
 		},
 
 		async initiateCall(contact) {
-			const res = await axios.get('contacts/getPeer/ ' + contact.id)
+			const res = await axios.get('contacts/getPeer/ ' + contact?.id)
 			if (res.data.output)
 				this.sendCallRequest({ ...res.data.output, token: this.token })
 			else console.log('error: no peer found')

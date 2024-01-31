@@ -1,4 +1,3 @@
-<!-- FloatingWidget.vue -->
 <template>
 	<div
 		v-if="isVisible && streams.length > 1"
@@ -8,7 +7,6 @@
 	>
 		<div v-for="(streamMeta, index) in streams" :key="index">
 			<video
-				:id="'remoteVideo' + index"
 				style="width: auto; height: 150px"
 				:srcObject="streamMeta.stream"
 				:onClick="() => select(metadata(streamMeta.peer))"
@@ -66,11 +64,8 @@ export default {
 
 		select(contact) {
 			if (!contact || !contact?.id) return
-			//if (contact.id == this.user.id) return
 			const payload = {
-				contact,
-				convId: contact.id,
-				type: 'conversation',
+				contactId: contact.id,
 			}
 			this.displayConversation(payload)
 		},

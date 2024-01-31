@@ -6,10 +6,10 @@ export default {
 		list: [],
 	}),
 	mutations: {
-		setContactList(state, contactList) {
+		setContactDataList(state, contactList) {
 			state.list = contactList
 		},
-		setContact(state, contact) {
+		setContactData(state, contact) {
 			const id = contact?.id
 			if (!id) {
 				return
@@ -40,15 +40,15 @@ export default {
 		async retrieveContacts(state) {
 			const res = await axios.get('/contacts/getAll')
 
-			state.commit('setContactList', res.data.output)
+			state.commit('setContactDataList', res.data.output)
 		},
 		async updateContact(state, id) {
 			const res = await axios.get('/user/getInfo/' + id)
 
-			state.commit('setContact', res.data.output)
+			state.commit('setContactData', res.data.output)
 		},
 		async receiveContactUpdate(state, user) {
-			state.commit('setContact', user)
+			state.commit('setContactData', user)
 		},
 	},
 }

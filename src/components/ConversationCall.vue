@@ -26,7 +26,7 @@
 									: 'default',
 							backgroundColor: 'black',
 						}"
-						:muted="streamMeta?.peer == 'self' || streamMeta?.mute"
+						muted
 						autoplay
 						playsinline
 						:onClick="
