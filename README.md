@@ -10,6 +10,8 @@ Check out the live demo [here](https://dixcordes.julianoouvrard.com/). Please no
 
 # You're on the "server" branch
 
+This indicates that the current branch exclusively consists of backend code, and the client portion is not included here. Please switch to the "client" branch to access the client-related code.
+
 ## Getting Started
 1. Clone the repository to your local machine:
 
