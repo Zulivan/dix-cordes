@@ -57,13 +57,13 @@ async function createUser(info) {
 async function loginUser(username, password) {
   const [isNicknameAlreadyUsed, userList] = await isNicknameUsed(username)
 
-  if (!isNicknameAlreadyUsed) throw Error("error: account doesn't exist")
+  if (!isNicknameAlreadyUsed) throw Error('unkownAccount')
 
   const user = userList[0]
 
   const verifiedPass = await comparePasswords(password, user.password)
 
-  if (!verifiedPass) throw Error('error: wrong password')
+  if (!verifiedPass) throw Error('wrongPassword')
 
   return user
 }
