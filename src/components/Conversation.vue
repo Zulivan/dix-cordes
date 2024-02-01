@@ -12,8 +12,11 @@
 			/>
 			<div class="pl-2 d-flex flex-column">
 				<h2 class="align-middle">
-					Conversation avec
-					{{ contact?.nickname || 'personne' }}
+					{{
+						$t('conversation.header', {
+							nickname: contact?.nickname || 'personne',
+						})
+					}}
 				</h2>
 				<div class="d-flex">
 					<div
@@ -63,7 +66,13 @@
 		<textarea
 			maxlength="256"
 			ref="keyboardRef"
-			placeholder="Ecrivez un message"
+			:placeholder="
+				$t('conversation.placeholder', {
+					nickname: contact
+						? contact.nickname || 'personne'
+						: 'personne',
+				})
+			"
 			v-model="message"
 		>
 		</textarea>

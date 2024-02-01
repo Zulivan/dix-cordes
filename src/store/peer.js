@@ -33,7 +33,7 @@ const getters = {
 
 const actions = {
 	async sendCallRequest({ commit, dispatch, state }, payload) {
-		commit('setCallStatus', 'Connecting to peer connection broker...')
+		commit('setCallStatus', 'connecting')
 		await dispatch('initPeer', payload.token)
 
 		if (!state.remoteStreams.some((item) => item.peer === 'self')) {
@@ -47,7 +47,7 @@ const actions = {
 		state.myCalls.push(payload.id)
 		setTimeout(() => {
 			state.peer.connect(payload.id)
-			commit('setCallStatus', 'Calling contact...')
+			commit('setCallStatus', 'reaching')
 			state.peer.call(payload.id, state.myLocalVideoStream)
 		}, 1000)
 	},
@@ -136,7 +136,7 @@ const actions = {
 		state.peer.on('connection', (connection) => {
 			connection.on('data', (data) => {
 				if (data === 'PAIR_CLOSED') {
-					commit('setCallStatus', 'User ended call')
+					commit('setCallStatus', 'ended')
 					commit('close', connection.peer)
 				}
 			})
@@ -151,7 +151,7 @@ const actions = {
 
 		state.peer.on('error', (error) => {
 			if (error.message.includes('Could not connect to peer')) {
-				commit('setCallStatus', 'User is offline')
+				commit('setCallStatus', 'unreachable')
 			}
 		})
 	},

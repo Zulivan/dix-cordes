@@ -1,9 +1,11 @@
 <template>
 	<div class="row">
 		<div class="col-12" ref="container">
-			<h2 class="d-flex justify-content-center">Vos contacts</h2>
+			<h2 class="d-flex justify-content-center">
+				{{ $t('contactList.title') }}
+			</h2>
 			<h4 class="d-flex justify-content-center">
-				Cliquez sur l'un d'entre eux pour commencer une conversation
+				{{ $t('contactList.subtitle') }}
 			</h4>
 		</div>
 

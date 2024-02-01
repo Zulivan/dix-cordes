@@ -1,0 +1,85 @@
+export default {
+	sidebar: {
+		tabs: {
+			contacts: 'Contacts',
+			archives: 'Archived Conv.',
+		},
+	},
+	conversationList: {
+		noConversations: 'No conversations',
+		noArchives: 'No archived conversations',
+	},
+	contactList: {
+		title: 'Your Contacts',
+		subtitle: 'Click on a contact to start a conversation',
+		add: 'Add a contact',
+	},
+	app: {
+		sourceCode: 'Source Code',
+		logout: 'Logout',
+		login: 'Login',
+		register: 'Register',
+		home: 'Home',
+		edit: 'Edit',
+		search: 'Search...',
+		auth: {
+			errors: {
+				missingUsername: 'Please enter a username',
+				missingPassword: 'Please enter a password',
+				passwordsDontMatch: "Passwords don't match",
+				usernameTooShort: 'Username is too short',
+				passwordTooWeak: 'Password is too weak',
+				unknownUsername: 'User not found',
+				unknownAccount: 'Unkown account or wrong password',
+			},
+			passwordCriteria: {
+				title: 'Password must contain the following:',
+				uppercase: 'Uppercase letter',
+				lowercase: 'Lowercase letter',
+				number: 'A number',
+				special: 'A special character',
+				length: 'Minimum 8 characters',
+			},
+		},
+		status: {
+			online: 'Online',
+			away: 'Away',
+			busy: 'Busy',
+			offline: 'Offline',
+		},
+	},
+	call: {
+		answer: 'Answer',
+		reject: 'Reject',
+		calling: {
+			title: 'Calling...',
+			cancel: 'Cancel',
+			status: {
+				connecting: 'Connecting to the peer connection broker...',
+				reaching: 'Reaching user...',
+				unreachable: 'User unreachable',
+				answered: 'Answered',
+				ended: 'Call ended',
+				rejected: 'Rejected',
+			},
+		},
+	},
+	conversation: {
+		header: 'Conversation with {nickname}',
+		placeholder: 'Enter your message here to send to {nickname}',
+		send: 'Send',
+	},
+	settings: {
+		language: 'Language',
+		title: 'Settings',
+		passwordConfirmation: 'Password confirmation',
+		subtitle: 'Modify your settings here...',
+		nickname: 'Nickname',
+		password: 'Password',
+		email: 'Email',
+		motd: 'Personal Message',
+		status: 'Status',
+		save: 'Save',
+		cancel: 'Cancel',
+	},
+}

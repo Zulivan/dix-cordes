@@ -8,8 +8,8 @@
 			<div class="px-5" v-if="orderedContacts().length == 0">
 				{{
 					showArchives
-						? 'Aucune archive sauvegardée'
-						: 'Aucune conversation en cours'
+						? $t('conversationList.noArchives')
+						: $t('conversationList.noConversations')
 				}}
 			</div>
 			<div

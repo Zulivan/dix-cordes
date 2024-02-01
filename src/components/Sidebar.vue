@@ -5,7 +5,7 @@
 				<input
 					class="w-100 form-control bg-dark border-primary text-white"
 					type="text"
-					placeholder="Rechercher..."
+					:placeholder="$t('app.search')"
 					v-model="sidebarFilter"
 				/>
 			</div>
@@ -21,7 +21,7 @@
 							:aria-controls="tab.view"
 							:aria-selected="currentSidebarView === tab.view"
 						>
-							{{ tab.label }}
+							{{ $t('sidebar.tabs.' + tab.view) }}
 						</a>
 					</li>
 				</ul>
@@ -79,10 +79,10 @@
 
 			<div class="d-flex col-12 justify-content-start px-0 pt-2">
 				<button @click="logout" class="btn btn-danger mx-1">
-					Se déconnecter
+					{{ $t('app.logout') }}
 				</button>
 				<button @click="setView('settings')" class="btn btn-warning">
-					Paramètres
+					{{ $t('settings.title') }}
 				</button>
 			</div>
 		</div>
@@ -128,8 +128,8 @@ export default {
 		}),
 		tabs() {
 			return [
-				{ id: 1, view: 'contacts', label: 'Contacts' },
-				{ id: 2, view: 'archives', label: 'Conv. Archivées' },
+				{ id: 1, view: 'contacts' },
+				{ id: 2, view: 'archives' },
 			]
 		},
 	},

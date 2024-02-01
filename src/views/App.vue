@@ -156,7 +156,6 @@ export default {
 			}
 		)
 
-		// Load data from API
 		try {
 			const req = await this.retrieveUserInfo('self')
 			if (req?.data?.output === null) throw 'no user info'

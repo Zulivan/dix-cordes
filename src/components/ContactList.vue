@@ -1,5 +1,5 @@
 <template>
-	<div class="row" :style="{ height: height, overflow: 'auto' }">
+	<div class="row d-block overflow-auto" :style="{ height: height }">
 		<template v-for="contact in contacts" v-bind:key="contact.id">
 			<Contact
 				:contact="contact"

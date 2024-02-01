@@ -8,7 +8,9 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="incomingCallModalLabel">
-						{{ modalHeader ? modalHeader : 'Appel sortant' }}
+						{{
+							modalHeader ? modalHeader : $t('call.calling.title')
+						}}
 					</h5>
 					<button
 						type="button"
@@ -21,7 +23,13 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<p>{{ modalBody ? modalBody : callStatus }}</p>
+					<p>
+						{{
+							modalBody
+								? modalBody
+								: $t('call.calling.status.' + callStatus)
+						}}
+					</p>
 				</div>
 				<div class="modal-footer">
 					<button
@@ -30,7 +38,7 @@
 						@click="() => answerCall()"
 						v-show="callStack > 0"
 					>
-						Répondre
+						{{ $t('call.answer') }}
 					</button>
 					<button
 						type="button"
@@ -39,7 +47,7 @@
 						@click="() => rejectCall()"
 						v-show="callStack > 0"
 					>
-						Décliner
+						{{ $t('call.reject') }}
 					</button>
 				</div>
 			</div>
