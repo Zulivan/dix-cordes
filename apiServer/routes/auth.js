@@ -6,8 +6,8 @@ import { createUser, loginUser } from '../methods/auth.js'
 const router = express.Router({ mergeParams: true })
 
 router.post('/register/', async (req, res) => {
-  if (!req?.body?.username) return res.apiStatus('error: no username', 404)
-  if (!req?.body?.password) return res.apiStatus('error: no password', 404)
+  if (!req?.body?.username) return res.apiStatus('missingUsername', 404)
+  if (!req?.body?.password) return res.apiStatus('missingPassword', 404)
 
   // Create user
   let user = {
@@ -26,10 +26,8 @@ router.post('/register/', async (req, res) => {
 })
 
 router.post('/login/', async (req, res) => {
-  if (!req?.body?.username)
-    return res.apiStatus('error: no username found', 404)
-  if (!req?.body?.password)
-    return res.apiStatus('error: no password found', 404)
+  if (!req?.body?.username) return res.apiStatus('unknownUsername', 404)
+  if (!req?.body?.password) return res.apiStatus('unknownUsername', 404)
 
   let user = {}
   try {
