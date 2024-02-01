@@ -10,7 +10,7 @@ id INT DEFAULT NEXTVAL ('message_seq'),
 sender INT,
 recipient INT,
 date TIMESTAMP(0),
-content TEXT
+content TEXT,
 isRead BOOLEAN,
 PRIMARY KEY (id)
 )  ;
@@ -53,66 +53,3 @@ INSERT INTO status VALUES (nextval('status_seq'), 'online', '#00ff22');
 INSERT INTO status VALUES (nextval('status_seq'), 'away', '#ffa200');
 INSERT INTO status VALUES (nextval('status_seq'), 'busy', '#ff2e17');
 INSERT INTO status VALUES (nextval('status_seq'), 'offline', '#000000');
-
--- Group chat groups
-CREATE SEQUENCE group_seq;
-
-CREATE TABLE IF NOT EXISTS group (
-id INT DEFAULT NEXTVAL ('group_seq'),
-owner INT,
-name VARCHAR(50),
-description VARCHAR(255),
-PRIMARY KEY (id)
-);
-
-ALTER TABLE group ADD CONSTRAINT fk_group_owner FOREIGN KEY (owner) REFERENCES "user"(id);
-
-CREATE SEQUENCE group_user_seq;
-
-CREATE TABLE IF NOT EXISTS group_user (
-group INT,
-user INT,
-PRIMARY KEY (group, user)
-);
-
-ALTER TABLE group_user ADD CONSTRAINT fk_group_user_group FOREIGN KEY (group) REFERENCES group(id);
-ALTER TABLE group_user ADD CONSTRAINT fk_group_user_user FOREIGN KEY (user) REFERENCES "user"(id);
-
--- Servers
-
-CREATE SEQUENCE server_seq;
-
-CREATE TABLE IF NOT EXISTS server (
-id INT DEFAULT NEXTVAL ('server_seq'),
-name VARCHAR(50),
-description VARCHAR(255),
-owner INT,
-PRIMARY KEY (id)
-);
-
-ALTER TABLE server ADD CONSTRAINT fk_server_owner FOREIGN KEY (owner) REFERENCES "user"(id);
-
-CREATE SEQUENCE server_user_seq;
-
-CREATE TABLE IF NOT EXISTS server_user (
-server INT,
-user INT,
-PRIMARY KEY (server, user)
-);
-
-ALTER TABLE server_user ADD CONSTRAINT fk_server_user_server FOREIGN KEY (server) REFERENCES server(id);
-ALTER TABLE server_user ADD CONSTRAINT fk_server_user_user FOREIGN KEY (user) REFERENCES "user"(id);
-
--- Channels
-
-CREATE SEQUENCE channel_seq;
-
-CREATE TABLE IF NOT EXISTS channel (
-id INT DEFAULT NEXTVAL ('channel_seq'),
-name VARCHAR(50),
-description VARCHAR(255),
-server INT,
-PRIMARY KEY (id)
-);
-
-ALTER TABLE channel ADD CONSTRAINT fk_channel_server FOREIGN KEY (server) REFERENCES server(id);
