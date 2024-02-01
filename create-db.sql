@@ -49,10 +49,10 @@ UPDATE messagerie.user SET status = NULL;
 ALTER TABLE messagerie.user ALTER COLUMN status TYPE INT USING status::integer;
 ALTER TABLE messagerie.user ADD CONSTRAINT fk_status FOREIGN KEY (status) REFERENCES status(id);
 
-INSERT INTO status VALUES (nextval('status_seq'), 'Online', '#00ff22');
-INSERT INTO status VALUES (nextval('status_seq'), 'Away', '#ffa200');
-INSERT INTO status VALUES (nextval('status_seq'), 'Busy', '#ff2e17');
-INSERT INTO status VALUES (nextval('status_seq'), 'Offline', '#000000');
+INSERT INTO status VALUES (nextval('status_seq'), 'online', '#00ff22');
+INSERT INTO status VALUES (nextval('status_seq'), 'away', '#ffa200');
+INSERT INTO status VALUES (nextval('status_seq'), 'busy', '#ff2e17');
+INSERT INTO status VALUES (nextval('status_seq'), 'offline', '#000000');
 
 -- Group chat groups
 CREATE SEQUENCE group_seq;
