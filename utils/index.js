@@ -19,9 +19,11 @@ function getRelay(socket, port) {
   const isReverseProxy =
     socket?.handshake?.headers['x-forwarded-for'] !== undefined
 
+  const host =
+    socket?.handshake?.headers?.host.split(':').shift() || getLocalIpAddress()
+
   const ipAddress =
-    process.env.IP_ADDRESS ||
-    (isReverseProxy ? req?.headers?.host : getLocalIpAddress())
+    process.env.IP_ADDRESS || (isReverseProxy ? host : getLocalIpAddress())
 
   const relay = ipAddress + ':' + port
 
