@@ -25,6 +25,8 @@ git clone https://github.com/Zulivan/dix-cordes.git
 
 2. Build and run the Docker containers:
 
+- Pay attention to the environment variables such as `TOKEN_SECRET`, `DATABASE_URL`, and `AES_KEY`
+
 ```bash
 docker-compose up --build
 ```
@@ -33,4 +35,9 @@ This command will build the app and start the containers for the Express.js serv
 
 3. Access the app at [http://localhost:9000]() .
 
-- Pay attention to the environment variables such as `TOKEN_SECRET`, `DATABASE_URL`, and `AES_KEY`
+## Image from docker hub
+
+You can get the latest image from docker-hub for convenience.
+```bash
+docker pull jouvrard/dix-cordes-backend:latest
+```
