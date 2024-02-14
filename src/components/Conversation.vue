@@ -14,7 +14,7 @@
 				<h2 class="align-middle">
 					{{
 						$t('conversation.header', {
-							nickname: contact?.nickname || 'personne',
+							nickname: contact?.nickname || '...',
 						})
 					}}
 				</h2>
@@ -68,9 +68,7 @@
 			ref="keyboardRef"
 			:placeholder="
 				$t('conversation.placeholder', {
-					nickname: contact
-						? contact.nickname || 'personne'
-						: 'personne',
+					nickname: contact?.nickname || '...',
 				})
 			"
 			v-model="message"

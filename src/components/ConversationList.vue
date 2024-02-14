@@ -91,6 +91,7 @@ export default {
 		},
 
 		select(contact) {
+			console.log('selecting', contact)
 			if (this.isSelected(contact)) return
 
 			if (this.debounce && Date.now() - this.debounce < 1) return
@@ -100,9 +101,7 @@ export default {
 
 			const payload = {
 				contactId: contact.id,
-			}
-			if (this.showArchives) {
-				payload.type = 'archive'
+				type: this.showArchives ? 'archived' : 'conversation',
 			}
 			this.displayConversation(payload)
 		},

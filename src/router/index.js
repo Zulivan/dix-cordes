@@ -15,7 +15,7 @@ const routes = [
 		component: App,
 	},
 	{
-		path: '/app/@moi/:currentContact',
+		path: '/app/@me/:currentContact',
 		name: 'ApplicationContactInput',
 		props: true,
 		component: App,

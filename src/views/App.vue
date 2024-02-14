@@ -170,11 +170,11 @@ export default {
 		}
 
 		if (this.currentContact) {
-			this.setView('conversation')
 			const req = await this.retrieveUserInfo(this.currentContact)
 			if (req.error) {
 				this.setView('contacts')
 			} else {
+				this.setView('conversation')
 				const contact = req.output
 				await this.setContactData(contact)
 				this.$router.push({
@@ -188,11 +188,11 @@ export default {
 				this.displayConversation(payload)
 			}
 		} else if (this.currentArchive) {
-			this.setView('archives')
 			const req = await this.retrieveUserInfo(this.currentArchive)
 			if (req.error) {
 				this.setView('contacts')
 			} else {
+				this.setView('archives')
 				const payload = {
 					contactId: req.output.id,
 					type: 'archive',
