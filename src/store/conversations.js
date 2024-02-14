@@ -38,18 +38,13 @@ export default {
 			return Object.keys(state.conversations)
 				.filter((key) => {
 					const conv = state.conversations[key]
-					return (
-						conv.type === 'conversation' &&
-						conv.messages &&
-						Array.isArray(conv.messages) &&
-						conv.messages.length > 0
-					)
+					return conv.type === 'conversation'
 				})
 				.map((key) => [
 					key,
-					state.conversations[key].messages[
-						state.conversations[key].messages.length - 1
-					].date,
+					state.conversations[key]?.messages[
+						state.conversations[key]?.messages.length - 1
+					]?.date || 0,
 				])
 				.sort((a, b) => new Date(b[1]) - new Date(a[1]))
 		},
@@ -85,10 +80,8 @@ export default {
 			}
 		},
 		async setCurrentConversation(state, payload) {
-			let convList = state.conversations
-
-			if (!convList[payload.contactId])
-				convList[payload.contactId] = {
+			if (!state.conversations[payload.contactId])
+				state.conversations[payload.contactId] = {
 					messages: [],
 					contactId: payload.contactId,
 					type: payload.type,
@@ -195,6 +188,8 @@ export default {
 				message,
 				recipient: contactId,
 			})
+
+			if (res.data.error) return
 
 			state.commit('receiveMessage', {
 				...res.data.output,
