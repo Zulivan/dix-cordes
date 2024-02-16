@@ -28,6 +28,7 @@ export default {
 				missingPassword: 'Please enter a password',
 				passwordsDontMatch: "Passwords don't match",
 				usernameTooShort: 'Username is too short',
+				usernameAlreadyTaken: 'Username already taken',
 				passwordTooWeak: 'Password is too weak',
 				unknownUsername: 'User not found',
 				unknownAccount: 'Unkown account or wrong password',

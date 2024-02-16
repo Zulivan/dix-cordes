@@ -205,6 +205,13 @@ const actions = {
 			commit('close', callToReject.peer)
 		}
 	},
+
+	endCalls({ commit, state }) {
+		for (const call of state.remoteStreams) {
+			commit('close', call.peer)
+		}
+		state.peer.destroy()
+	},
 }
 
 const mutations = {
@@ -268,7 +275,7 @@ const mutations = {
 			try {
 				state.receiveConnections[connectionIndex].send('PAIR_CLOSED')
 			} catch (e) {
-				console.log('closed')
+				console.log('not closed')
 			}
 			state.receiveConnections[connectionIndex].close()
 		}

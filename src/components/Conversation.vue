@@ -140,7 +140,7 @@ export default {
 			'sendMessage',
 			'archiveCurrentConversation',
 		]),
-		...mapActions('peer', ['sendCallRequest']),
+		...mapActions('peer', ['sendCallRequest', 'endCalls']),
 
 		isContactInStreams() {
 			if (!this.contact) return false
@@ -151,6 +151,8 @@ export default {
 		},
 
 		async initiateCall(contact) {
+			if (this.isContactInStreams()) return this.endCalls()
+
 			const res = await axios.get('contacts/getPeer/ ' + contact?.id)
 			if (res.data.output)
 				this.sendCallRequest({ ...res.data.output, token: this.token })
