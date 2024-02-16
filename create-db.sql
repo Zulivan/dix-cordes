@@ -1,6 +1,6 @@
-CREATE SCHEMA IF NOT EXISTS messagerie;
+CREATE SCHEMA IF NOT EXISTS dixcordes;
 
-SET SCHEMA 'messagerie';
+SET SCHEMA 'dixcordes';
 
 -- SQLINES LICENSE FOR EVALUATION USE ONLY
 CREATE SEQUENCE message_seq;
@@ -44,10 +44,10 @@ color VARCHAR(40),
 PRIMARY KEY (id)
 );
 
-UPDATE messagerie.user SET status = NULL;
+UPDATE dixcordes.user SET status = NULL;
 
-ALTER TABLE messagerie.user ALTER COLUMN status TYPE INT USING status::integer;
-ALTER TABLE messagerie.user ADD CONSTRAINT fk_status FOREIGN KEY (status) REFERENCES status(id);
+ALTER TABLE dixcordes.user ALTER COLUMN status TYPE INT USING status::integer;
+ALTER TABLE dixcordes.user ADD CONSTRAINT fk_status FOREIGN KEY (status) REFERENCES status(id);
 
 INSERT INTO status VALUES (nextval('status_seq'), 'online', '#00ff22');
 INSERT INTO status VALUES (nextval('status_seq'), 'away', '#ffa200');

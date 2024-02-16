@@ -1,8 +1,5 @@
 {
-  "serveur": {
-    "port": 9000
-  },
   "bd": {
-    "schema": "messagerie"
+    "schema": "dixcordes"
   }
 }
