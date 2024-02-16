@@ -1,37 +1,43 @@
-# Dixcordes App
+# Dix-cordes
+Dix-Cordes is my personal project, a communication platform inspired by Discord. It includes live chat and peer-to-peer live calls, and is built using Vue.js 3, PeerJS, Socket.IO, and PostgreSQL for the backend.
+The goal of this project is to create a fast and efficient live chat experience that can be hosted locally.
+Dix-Cordes strives to deliver users a seamless communication experience by integrating the benefits of real-time messaging and voice communication.
 
-This repository contains a Docker Compose configuration to run the Dix-cordes app, which includes an Express.js server and a PostgreSQL database server.
-## Prerequisites
+Check out the live demo [here](https://dixcordes.julianoouvrard.com/). Please note that the demo is reset every 24 hours.
+
+## Features
+- **Live Chat:** Engage in real-time conversations
+- **Secure Communication:** Messages are securely stored using AES encryption
+- **Enhanced Security:** A floating keyboard emerges when sending a message to prevent keylogger threats
+- **Live Call (Peer-to-Peer):** Direct video communication with others through peer-to-peer live calls
+- **Global Accessibility:** Dix-cordes features English and partially supports French, German, Spanish, Japanese, and Chinese
+
+# You're on the "server" branch
+
+This indicates that the current branch exclusively consists of backend code, and the client portion is not included here. Please switch to the "client" branch to access the client-related code.
 
 ## Getting Started
-
-Follow these steps to set up and run the Dixcordes app: 
 1. Clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/Zulivan/dix-cordes.git
 ```
 
-3. Create a `.env` file in the project's root directory with the following content. Update the values as needed:
+2. Build and run the Docker containers:
 
-```dotenv
-PORT=9000
-PORT_PEER=9001
-IP_ADDRESS=127.0.0.1
-SERVER_TYPES=global
-DATABASE_URL=postgres://dixcordes_user:dixcordes_password@localhost:5432/dixcordes_db?sslmode=disable
-AES_KEY=EXAMPLE4pwIvnTu5rrM69ymw42YqiZ9Egg8UpSf5wFa6m4o9SmejXhGdtpUelkyK
-TOKEN_SECRET=AzeRtY2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z
-``` 
-4. Build and run the Docker containers:
+- Pay attention to the environment variables such as `TOKEN_SECRET`, `DATABASE_URL`, and `AES_KEY`
 
 ```bash
 docker-compose up --build
 ```
 
-This command will build the app and start the containers for the Express.js server and PostgreSQL database. 
-5. Access the app at [http://localhost:9000]() .
-## Important Notes 
-- Make sure to customize the values in the `.env` file according to your preferences. 
-- Pay attention to the environment variables such as `TOKEN_SECRET`, `DATABASE_URL`, and `AES_KEY` in the `.env` file.
-## Stopping the Application
+This command will build the app and start the containers for the Express.js servers (socketio and peerjs) and a PostgreSQL database server. 
+
+3. Access the app at [http://localhost:9000]() .
+
+## Image from docker hub
+
+You can get the latest image from docker-hub for convenience.
+```bash
+docker pull jouvrard/dix-cordes-backend:latest
+```
