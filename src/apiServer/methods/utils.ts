@@ -1,10 +1,13 @@
-import models from '../../model.js'
+import models from '../../model'
+import { UserAttributes } from '../../models/user'
 
 /** Si le nom est déjà utilisé par un autre utilisateur
  * @param {string} nickname nickname
- * @return {object}
+ * @return {Promise<[boolean, User[]]>}
  */
-async function isNicknameUsed(nickname) {
+async function isNicknameUsed(
+  nickname: string,
+): Promise<[boolean, UserAttributes[]]> {
   const list = await models.User.findAll({
     raw: false,
     where: {

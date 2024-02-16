@@ -1,11 +1,32 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable new-cap */
-import _sequelize from 'sequelize'
-const { Model } = _sequelize
-export default class User extends Model {
-  // eslint-disable-next-line require-jsdoc
-  static init(sequelize, DataTypes) {
-    return super.init(
+import { Model, DataTypes, Sequelize } from 'sequelize'
+
+export interface UserAttributes {
+  id: number
+  nickname: string | null
+  fname: string | null
+  lname: string | null
+  password: string | null
+  motd: string | null
+  status: number | null
+  image: string | null
+  peerjsrelay: string | null
+  socketrelay: string | null
+}
+
+class User extends Model<UserAttributes> {
+  public id!: number
+  public nickname!: string | null
+  public fname!: string | null
+  public lname!: string | null
+  public password!: string | null
+  public motd!: string | null
+  public status!: number | null
+  public image!: string | null
+  public peerjsrelay!: string | null
+  public socketrelay!: string | null
+
+  public static initModel(sequelize: Sequelize): any {
+    return User.init(
       {
         id: {
           autoIncrement: true,
@@ -66,3 +87,5 @@ export default class User extends Model {
     )
   }
 }
+
+export default User

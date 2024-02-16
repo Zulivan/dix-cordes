@@ -1,12 +1,12 @@
-import express from 'express'
-// import { authToken } from '../../jwt.js'
-import models from '../../model.js'
-// import { Op } from 'sequelize'
-// eslint-disable-next-line new-cap
+import express, { Request, Response } from 'express'
+import { Op } from 'sequelize'
+import models from '../../model'
+import { APIInterface } from '../index'
+
 const router = express.Router({ mergeParams: true })
 
-router.get('/getPeer/:id', async (req, res) => {
-  const id = req?.params?.id
+router.get('/getPeer/:id', async (req: Request, res: any) => {
+  const id: string = req?.params?.id
   if (!id) return res.apiStatus(null)
   const user = await models.User.findByPk(id, {
     attributes: {
@@ -19,7 +19,7 @@ router.get('/getPeer/:id', async (req, res) => {
     // check if peerjsRelay is set
     if (!user.peerjsrelay || user.peerjsrelay === '')
       throw new Error('User is not available')
-    const peerJsRelay = user.peerjsrelay.split('|')
+    const peerJsRelay: string[] = user.peerjsrelay.split('|')
 
     const output = {
       node: peerJsRelay[0],
@@ -33,7 +33,7 @@ router.get('/getPeer/:id', async (req, res) => {
   }
 })
 
-router.get('/getAll', async (req, res) => {
+router.get('/getAll', async (req: Request, res: any) => {
   const users = await models.User.findAll({
     attributes: {
       exclude: ['fname', 'lname', 'password', 'peerjsrelay', 'socketrelay'],
@@ -50,7 +50,7 @@ router.get('/getAll', async (req, res) => {
   res.apiStatus(users)
 })
 
-router.get('*', (req, res) => {
+router.get('*', (req: Request, res: Response) => {
   res.send('Route Contacts')
 })
 

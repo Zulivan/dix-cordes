@@ -1,38 +1,37 @@
-import express from 'express'
-import sequelize from 'sequelize'
-
-import { authToken } from '../../jwt.js'
+import express, { Request, Response, Router } from 'express'
+import { authToken, UserRequest } from '../../jwt.js'
 import conversation from '../methods/conversation.js'
 import models from '../../model.js'
+import ChatServer from '../../chatServer'
+import sequelize from 'sequelize'
 
-// eslint-disable-next-line new-cap
-const router = express.Router({ mergeParams: true })
+const router: Router = express.Router({ mergeParams: true })
 
-router.get('/list', authToken, async (req, res) => {
-  const output = await conversation.getAll(req.user.id)
+router.get('/list', authToken, async (req: UserRequest, res: any) => {
+  const output: any = await conversation.getAll(req.user.id)
 
   res.apiStatus(output)
 })
 
-router.post('/messages', authToken, async (req, res) => {
+router.post('/messages', authToken, async (req: UserRequest, res: any) => {
   if (!req?.body?.sender) return res.apiStatus('error: no sender', 404)
 
-  const output = await conversation.messages(req.body.sender, req.user.id)
+  const output: any = await conversation.messages(req.body.sender, req.user.id)
 
   res.apiStatus(output)
 })
 
-router.delete('/messages', authToken, async (req, res) => {
+router.delete('/messages', authToken, async (req: UserRequest, res: any) => {
   if (!req?.body?.id) return res.apiStatus('error: no id', 404)
 
-  const msg = await conversation.getMessage(req.body.id)
+  const msg: any = await conversation.getMessage(req.body.id)
 
-  const del = await conversation.deleteMessage(req.body.id, req.user.id)
+  const del: number = await conversation.deleteMessage(req.body.id, req.user.id)
 
   if (del == 1) {
-    const jsonMsg = msg.dataValues
+    const jsonMsg: any = msg.dataValues
 
-    const recipientSocket = self.socket.get(jsonMsg.recipient)
+    const recipientSocket: any = self.socket?.get(jsonMsg.recipient) as any
 
     if (recipientSocket)
       recipientSocket.emit('conversations/receiveDeletion', {
@@ -48,10 +47,10 @@ router.delete('/messages', authToken, async (req, res) => {
   res.apiStatus('error: no message', 404)
 })
 
-router.post('/readAll/', authToken, async (req, res) => {
+router.post('/readAll/', authToken, async (req: UserRequest, res: any) => {
   if (!req?.body?.sender) return res.apiStatus('error: no sender', 404)
 
-  const updated = await models.Message.update(
+  const updated: [number, any] = await models.Message.update(
     {
       isread: true,
     },
@@ -61,20 +60,20 @@ router.post('/readAll/', authToken, async (req, res) => {
         sender: req.body.sender,
         isread: false,
       },
-    }
+    },
   )
 
-  res.apiStatus(updated + ' messages updated')
+  res.apiStatus(updated[0] + ' messages updated')
 })
 
-router.post('/message/', authToken, async (req, res) => {
+router.post('/message/', authToken, async (req: UserRequest, res: any) => {
   if (!req?.body?.recipient) return res.apiStatus('error: no recipient', 404)
   if (!req?.body?.message) return res.apiStatus('error: no message', 404)
   if (req.body.recipient == req.user.id)
     return res.apiStatus('error: sending message to oneself', 500)
 
-  const content = req.body.message
-  const recipientSocket = self.socket.get(req.body.recipient)
+  const content: string = req.body.message
+  const recipientSocket: any = self.socket?.get(req.body.recipient) as any
 
   models.Message.update(
     {
@@ -85,12 +84,12 @@ router.post('/message/', authToken, async (req, res) => {
         recipient: req.user.id,
         sender: req.body.recipient,
       },
-    }
-  ).then((v) => {
-    console.log(v + 'messages')
+    },
+  ).then((v: [number, any]) => {
+    console.log(v[0] + 'messages')
   })
 
-  const addedMessage = await models.Message.create({
+  const addedMessage: any = await models.Message.create({
     id: null,
     sender: req.user.id,
     recipient: req.body.recipient,
@@ -99,7 +98,7 @@ router.post('/message/', authToken, async (req, res) => {
     isread: 0,
   })
 
-  const message = await models.Message.findByPk(addedMessage.id, {
+  const message: any = await models.Message.findByPk(addedMessage.id, {
     include: [
       { as: 'recipient_user', model: models.User },
       { as: 'sender_user', model: models.User },
@@ -112,13 +111,13 @@ router.post('/message/', authToken, async (req, res) => {
   res.apiStatus(message)
 })
 
-router.get('*', (req, res) => {
+router.get('*', (req: Request, res: any) => {
   res.send('Route Conversation')
 })
 
 const self = {
   router,
-  socket: null,
+  socket: null as ChatServer | null,
 }
 
 export default self

@@ -2,11 +2,14 @@
   "name": "dixcordes-server",
   "version": "1.0.0",
   "description": "Dix-cordes API",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "nodemon": "nodemon index",
-    "start": "node index"
+    "nodemon": "nodemon dist/index",
+    "start": "node dist/index",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node-dev --respawn --transpile-only src/index.ts",
+    "docker": "docker-compose up -d"
   },
   "engines": {
     "node": "18.16.1",
@@ -32,6 +35,10 @@
     "socket.io": "^4.7.4"
   },
   "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/bcrypt": "^5.0.2",
+    "@types/config": "^3.3.3",
+    "@types/jsonwebtoken": "^9.0.5",
     "eslint": "^8.56.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.1.0",

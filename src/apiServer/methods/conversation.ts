@@ -1,16 +1,17 @@
-import sequelize from 'sequelize'
-import models from '../../model.js'
+import { Op } from 'sequelize'
+import models from '../../model'
+import { MessageAttributes } from '../../models/message'
 
 /** Récupère toutes les conversations
- * @param {string} userId ID
- * @return {void}
+ * @param {number} userId ID
+ * @return {Promise<MessageAttributes[]>}
  */
-function getAll(userId) {
+function getAll(userId: number): Promise<MessageAttributes[]> {
   // Get all conversations
   return models.Message.findAll({
     raw: false,
     where: {
-      [sequelize.Op.or]: [{ recipient: userId }, { sender: userId }],
+      [Op.or]: [{ recipient: userId }, { sender: userId }],
     },
     include: [
       { as: 'recipient_user', model: models.User },
@@ -20,23 +21,23 @@ function getAll(userId) {
 }
 
 /** Récupère les messages d'une conversation
- * @param {int} id Message
- * @param {int} initiator Personne qui supprime
- * @return {void}
+ * @param {number} id Message
+ * @param {number} initiator Personne qui supprime
+ * @return {Promise<number>}
  */
-async function deleteMessage(id, initiator) {
+async function deleteMessage(id: number, initiator: number): Promise<number> {
   try {
     return await models.Message.destroy({ where: { id, sender: initiator } })
   } catch (err) {
-    return err
+    return 0
   }
 }
 
 /** Récupère les messages d'une conversation
- * @param {int} id Message
- * @return {void}
+ * @param {number} id Message
+ * @return {Promise<Message>}
  */
-async function getMessage(id) {
+async function getMessage(id: number): Promise<MessageAttributes | null> {
   try {
     return await models.Message.findOne({
       where: {
@@ -44,21 +45,24 @@ async function getMessage(id) {
       },
     })
   } catch (err) {
-    return err
+    return null
   }
 }
 
-/** Récupère les messages d'une conversation
- * @param {string} sender Envoyeur
- * @param {string} recipient Receveur
- * @return {void}
+/** Get all messages between two users
+ * @param {number} sender Who sent the message
+ * @param {number} recipient Who received the message
+ * @return {Promise<MessageAttributes[]>}
  */
-async function messages(sender, recipient) {
+async function messages(
+  sender: number,
+  recipient: number,
+): Promise<MessageAttributes[]> {
   try {
     return await models.Message.findAll({
       raw: false,
       where: {
-        [sequelize.Op.or]: [
+        [Op.or]: [
           { recipient, sender },
           { sender: recipient, recipient: sender },
         ],
@@ -69,7 +73,7 @@ async function messages(sender, recipient) {
       ],
     })
   } catch (err) {
-    return err
+    return []
   }
 }
 

@@ -1,14 +1,12 @@
-/* eslint-disable require-jsdoc */
-import _sequelize from 'sequelize'
-const DataTypes = _sequelize.DataTypes
-import _Message from './message.js'
-import _Status from './status.js'
-import _User from './user.js'
+import { Sequelize } from 'sequelize'
+import MessageModel from './message'
+import StatusModel from './status'
+import UserModel from './user'
 
-export default function initModels(sequelize) {
-  const Message = _Message.init(sequelize, DataTypes)
-  const Status = _Status.init(sequelize, DataTypes)
-  const User = _User.init(sequelize, DataTypes)
+export default function initModels(sequelize: Sequelize) {
+  const Message = MessageModel.initModel(sequelize)
+  const Status = StatusModel.initModel(sequelize)
+  const User = UserModel.initModel(sequelize)
 
   User.belongsTo(Status, { as: 'status_object', foreignKey: 'status' })
   Status.hasMany(User, { as: 'users', foreignKey: 'status' })

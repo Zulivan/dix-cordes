@@ -1,12 +1,24 @@
 import { ExpressPeerServer } from 'peer'
-import { peerjsAuth } from '../jwt.js'
-import { getRelay } from '../utils/index.js'
-import { updateStatus, getUserById } from '../apiServer/methods/user.js'
+import { peerjsAuth } from '../jwt'
+import { getRelay } from '../utils/index'
+import { updateStatus, getUserById } from '../apiServer/methods/user'
+import http from 'http'
+import express from 'express'
+
+interface UserPayload {
+  id: string
+  nickname: string
+  avatar: string
+}
+
 class RTCServer {
-  constructor(server) {
-    this.peerServer = ExpressPeerServer(server, {
-      debug: true,
-    })
+  public peerServer: express.Express
+  private server: http.Server
+  private clients: { [key: string]: any }
+  private metadatas: { [key: string]: any }
+
+  constructor(server: http.Server) {
+    this.peerServer = ExpressPeerServer(server as http.Server)
 
     this.server = server
 
@@ -16,15 +28,15 @@ class RTCServer {
     this.init()
   }
 
-  init() {
+  private async init() {
     const self = this
-    this.peerServer.on('connection', async function (client) {
+    this.peerServer.on('connection', async function (client: any) {
       const userInfo = await peerjsAuth(client)
       if (!userInfo) return
 
       const peerRelay =
-        getRelay(client, process.env.PORT_PEER) + '|' + client.id
-      await updateStatus(userInfo.id, { peerjsrelay: peerRelay })
+        getRelay(client, Number(process.env.PORT_PEER)) + '|' + client.id
+      await updateStatus(Number(userInfo.id), { peerjsrelay: peerRelay })
 
       console.log('connected client', client.id, userInfo.nickname)
 
@@ -51,7 +63,7 @@ class RTCServer {
       self.metadatas[client.id] = metadata
       self.clients[userInfo.id] = client
     })
-    this.peerServer.on('disconnect', (client) => {
+    this.peerServer.on('disconnect', (client: any) => {
       console.log('disconnect', client.id)
       delete self.clients[client.id]
       delete self.metadatas[client.id]

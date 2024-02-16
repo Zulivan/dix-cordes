@@ -1,15 +1,22 @@
-// eslint-disable-next-line new-cap
-import * as sio from 'socket.io'
+import { Server } from 'http'
+import { Server as SocketIOServer, Socket } from 'socket.io'
 import { socketIOAuth } from '../jwt.js'
-import { updateStatus, getUserById } from '../apiServer/methods/user.js'
+import { updateStatus, getUserById } from '../apiServer/methods/user'
 import { getRelay } from '../utils/index.js'
+
+interface UserPayload {
+  id: number
+  nickname: string
+  avatar: string
+}
+
 class ChatServer {
-  /** Initialise
-   * @param {object} server Express server
-   * @return {void}
-   */
-  constructor(server) {
-    this.io = new sio.Server(server, {
+  public io: SocketIOServer
+  private server: Server
+  private sockets: { [userId: string]: Socket }
+
+  constructor(server: Server) {
+    this.io = new SocketIOServer(server, {
       cors: {
         origin: '*',
         credentials: true,
@@ -23,40 +30,28 @@ class ChatServer {
     this.init()
   }
 
-  /** Get socket
-   * @param {string} userId userId
-   * @return {object}
-   */
-  get(userId) {
+  public get(userId: string): Socket {
     return this.sockets[userId]
   }
 
-  /** Message socket
-   * @param {string} message messsage
-   * @param {string} val val
-   * @return {void}
-   */
-  log(message, val) {
+  private log(message: string, val: string): void {
     // console.log('[SOCKET]', message, val)
   }
 
-  /** Initialise
-   * @return {void}
-   */
-  init() {
+  private async init(): Promise<void> {
     const self = this
-
-    this.io.on('connection', async function (socket) {
-      const userInfo = await socketIOAuth(socket)
+    const port = process.env.PORT
+    this.io.on('connection', async function (socket: Socket) {
+      const userInfo = (await socketIOAuth(socket)) as UserPayload
       if (!userInfo) {
         socket.emit('user/logout', true)
         return socket.disconnect(true)
       }
-      self.log('Connecté :', userInfo)
-      self.log('Liste', self.sockets)
+      self.log('Connected: ', userInfo.id + ' ')
+      self.log('List: ', Object.keys(self.sockets) + ' ')
       self.sockets[userInfo.id] = socket
 
-      const socketRelay = getRelay(socket, process.env.PORT) + '|' + userInfo.id
+      const socketRelay = getRelay(socket, Number(port)) + '|' + userInfo.id
       await updateStatus(userInfo.id, { socketrelay: socketRelay, status: 1 })
 
       const userObj = await getUserById(userInfo.id)

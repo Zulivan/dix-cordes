@@ -1,11 +1,18 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable new-cap */
-import _sequelize from 'sequelize'
-const { Model } = _sequelize
+import { Model, DataTypes, Sequelize } from 'sequelize'
 
-export default class Status extends Model {
-  static init(sequelize, DataTypes) {
-    return super.init(
+interface StatusAttributes {
+  id: number
+  name: string | null
+  color: string | null
+}
+
+class Status extends Model<StatusAttributes> {
+  public id!: number
+  public name!: string | null
+  public color!: string | null
+
+  public static initModel(sequelize: Sequelize): any {
+    return Status.init(
       {
         id: {
           autoIncrement: true,
@@ -34,7 +41,9 @@ export default class Status extends Model {
             fields: [{ name: 'id' }],
           },
         ],
-      }
+      },
     )
   }
 }
+
+export default Status

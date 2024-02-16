@@ -1,12 +1,26 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable new-cap */
+// @ts-ignore
 import aes256 from 'aes256'
-import _sequelize from 'sequelize'
-const { Model } = _sequelize
+import { Model, DataTypes, Sequelize } from 'sequelize'
 
-export default class Message extends Model {
-  static init(sequelize, DataTypes) {
-    return super.init(
+export interface MessageAttributes {
+  id: number
+  sender: number | null
+  recipient: number | null
+  date: Date | null
+  content: string
+  isread: boolean | null
+}
+
+class Message extends Model<MessageAttributes> {
+  public id!: number
+  public sender!: number | null
+  public recipient!: number | null
+  public date!: Date | null
+  public content!: string
+  public isread!: boolean | null
+
+  public static initModel(sequelize: Sequelize): any {
+    return this.init(
       {
         id: {
           autoIncrement: true,
@@ -37,17 +51,17 @@ export default class Message extends Model {
         content: {
           type: DataTypes.STRING,
           allowNull: true,
-          get: function () {
+          get() {
             if (!this.getDataValue('content')) return ''
             return aes256.decrypt(
               process.env.AES_KEY,
-              this.getDataValue('content')
+              this.getDataValue('content'),
             )
           },
-          set: function (value) {
+          set(value: string) {
             this.setDataValue(
               'content',
-              aes256.encrypt(process.env.AES_KEY, value)
+              aes256.encrypt(process.env.AES_KEY, value),
             )
           },
         },
@@ -68,7 +82,9 @@ export default class Message extends Model {
             fields: [{ name: 'id' }],
           },
         ],
-      }
+      },
     )
   }
 }
+
+export default Message

@@ -1,23 +1,17 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import { generateAccessToken } from '../../jwt.js'
 import { createUser, loginUser } from '../methods/auth.js'
-
-// eslint-disable-next-line new-cap
 const router = express.Router({ mergeParams: true })
 
-router.post('/register/', async (req, res) => {
+router.post('/register/', async (req: Request, res: any) => {
   if (!req?.body?.username) return res.apiStatus('missingUsername', 404)
   if (!req?.body?.password) return res.apiStatus('missingPassword', 404)
 
-  // Create user
-  let user = {
-    nickname: req.body.username,
-    password: req.body.password,
-  }
+  let user: { dataValues: any } = { dataValues: {} }
 
   try {
-    user = await createUser(user)
-  } catch (e) {
+    user = (await createUser(req.body)) as any
+  } catch (e: any) {
     return res.apiStatus(e.message, 403)
   }
 
@@ -25,14 +19,14 @@ router.post('/register/', async (req, res) => {
   res.apiStatus(token)
 })
 
-router.post('/login/', async (req, res) => {
+router.post('/login/', async (req: Request, res: any) => {
   if (!req?.body?.username) return res.apiStatus('unknownUsername', 404)
   if (!req?.body?.password) return res.apiStatus('unknownUsername', 404)
 
-  let user = {}
+  let user: { dataValues: any } = { dataValues: {} }
   try {
-    user = await loginUser(req.body.username, req.body.password)
-  } catch (e) {
+    user = (await loginUser(req.body.username, req.body.password)) as any
+  } catch (e: any) {
     return res.apiStatus(e.message, 403)
   }
 
@@ -40,7 +34,7 @@ router.post('/login/', async (req, res) => {
   res.apiStatus(token)
 })
 
-router.get('*', (req, res) => {
+router.get('*', (req: Request, res: Response) => {
   res.send('Route Auth')
 })
 
